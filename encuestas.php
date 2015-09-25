@@ -42,7 +42,6 @@ if(! $conn )
 }
 
 
-
 //TOTAL DE ENCUESTAS ASIGNADAS Y PENDIENTES PARA ESTE OPERADOR
 mysql_select_db($dbname);
 
@@ -50,7 +49,18 @@ $sqlEncuestas ="select * from lime_surveys where  active='Y' and (expires is NUL
 $retval =  mysql_query( $sqlEncuestas, $conn );
 mysql_close($conn);
 
-echo "<h1> BIENVENIDO OPERADOR: $idOperador</h1>";
+?>
+
+<div class="container">
+	<header>
+        <h1>Listado de <span>Encuestas Activas</span></h1>
+<?php		
+		echo "<h1>Bienvenido operador <span>$idOperador</span></h1>" 
+?>
+	</header>
+
+<?PHP
+
 echo "<a class='button' href='logout.php'>Cerrar Sesión</a>";
 
 if(! $retval )
@@ -58,18 +68,25 @@ if(! $retval )
   die('Could not get data: ' . mysql_error());
 }
 ?>
+<div 
+style="margin: auto;    width: 60%;    border:3px solid #8AC007;    padding: 10px;">
 
 <table>
 	<tr>
-		<th>ENCUESTAS ACTIVAS</th>
+		<th>Encuestas</th>
+		<th>Pendientes</th>
+		<th>Totales</th>
+		<th>Acceso</th>
 	</tr>
-
 <?PHP
 
 while($row = mysql_fetch_assoc($retval))
 	{
 	echo "<tr>";
+	
 	echo "<td>{$row['sid']}</td>";
+	echo "<td> - </td>";
+	echo "<td> - </td>";
 	
 //	if($row['completed'] =='N')
 		echo "<td><a href='llamadas.php?surveyID={$row['sid']}'>Acceder</a></td>";
@@ -79,5 +96,6 @@ while($row = mysql_fetch_assoc($retval))
 	
 }
 ?>
-</table>
 
+</table>
+</div>
