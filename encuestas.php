@@ -31,8 +31,8 @@ if(!isset($idOperador))
 
 $dbhost = 'localhost';
 $dbuser = 'root';
-$dbpass = '';
-$dbname = 'limesurvey';
+$dbpass = 'cst@mkp1';
+$dbname = 'BBDDMKP';
 
 $conn = mysql_connect($dbhost, $dbuser, $dbpass);
 
@@ -45,7 +45,7 @@ if(! $conn )
 //TOTAL DE ENCUESTAS ASIGNADAS Y PENDIENTES PARA ESTE OPERADOR
 mysql_select_db($dbname);
 
-$sqlEncuestas ="select * from lime_surveys where  active='Y' and (expires is NULL OR expires > now())";
+$sqlEncuestas ="select * from surveys where  active='Y' and (expires is NULL OR expires > now())";
 $retval =  mysql_query( $sqlEncuestas, $conn );
 mysql_close($conn);
 

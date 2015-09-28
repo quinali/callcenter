@@ -33,8 +33,8 @@ if(!isset($usuario))
 
 $dbhost = 'localhost';
 $dbuser = 'root';
-$dbpass = '';
-$dbname = 'limesurvey';
+$dbpass = 'cst@mkp1';
+$dbname = 'BBDDMKP';
 
 $conn = mysql_connect($dbhost, $dbuser, $dbpass);
 
@@ -47,7 +47,7 @@ if(! $conn )
 //TOTAL DE ENCUESTAS ASIGNADAS Y PENDIENTES PARA ESTE OPERADOR
 mysql_select_db($dbname);
 
-$sqlToProcessCount ='SELECT count(1) FROM `lime_tokens_'.$limeSurvey.'` WHERE `attribute_1` ='.$idOperador.' AND `completed` ="N";';
+$sqlToProcessCount ='SELECT count(1) FROM `tokens_'.$limeSurvey.'` WHERE `attribute_1` ='.$idOperador.' AND `completed` ="N";';
 $nEncuestasPendientes = mysql_result(mysql_query( $sqlToProcessCount, $conn ),0);
 mysql_close($conn);
 
@@ -56,7 +56,7 @@ mysql_close($conn);
 $conn = mysql_connect($dbhost, $dbuser, $dbpass);
 mysql_select_db($dbname);
 
-$sqlTotalCount ='SELECT count(1) FROM `lime_tokens_'.$limeSurvey.'` WHERE `attribute_1` ="'.$idOperador.'";';
+$sqlTotalCount ='SELECT count(1) FROM `tokens_'.$limeSurvey.'` WHERE `attribute_1` ="'.$idOperador.'";';
 $nEncuestasTotales = mysql_result(mysql_query( $sqlTotalCount, $conn ),0);
 
 mysql_close($conn);
@@ -88,7 +88,7 @@ if($nEncuestasTotales ==0 )
 $conn = mysql_connect($dbhost, $dbuser, $dbpass);
 mysql_select_db($dbname);
 
-$sqlToken='select firstname,lastname,token,attribute_1,attribute_2,attribute_3,completed  from lime_tokens_'.$limeSurvey.' where attribute_1='.$idOperador.';';
+$sqlToken='select firstname,lastname,token,attribute_1,attribute_2,attribute_3,completed  from tokens_'.$limeSurvey.' where attribute_1='.$idOperador.';';
 
 $retval = mysql_query( $sqlToken, $conn );
 if(! $retval )

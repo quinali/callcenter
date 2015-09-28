@@ -5,11 +5,11 @@
 **Nombre de usuario: root.
 **Contraseña de usuario: root.
 **Si la conexion fallara mandamos un msj 'ha fallado la conexion'**/
-mysql_connect('localhost','root','')or die ('Ha fallado la conexión: '.mysql_error());
+mysql_connect('localhost','root','cst@mkp1')or die ('Ha fallado la conexión: '.mysql_error());
 
 /*Luego hacemos la conexión a la base de datos. 
 **De igual manera mandamos un msj si hay algun error*/
-mysql_select_db('limesurvey')or die ('Error al seleccionar la Base de Datos: '.mysql_error());
+mysql_select_db('BBDDMKP')or die ('Error al seleccionar la Base de Datos: '.mysql_error());
  
 /*caturamos nuestros datos que fueron enviados desde el formulario mediante el metodo POST
 **y los almacenamos en variables.*/
@@ -19,7 +19,7 @@ $password = $_POST["password"];
 /*Consulta de mysql con la que indicamos que necesitamos que seleccione
 **solo los campos que tenga como nombre_administrador el que el formulario
 **le ha enviado*/
-$result = mysql_query("SELECT * FROM lime_users WHERE users_name = '$usuario'");
+$result = mysql_query("SELECT * FROM users WHERE users_name = '$usuario'");
 
 //Validamos si el nombre del administrador existe en la base de datos o es correcto
 //if($row = mysql_fetch_array($result))

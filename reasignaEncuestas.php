@@ -13,8 +13,8 @@ p    {color:green}
 
 $dbhost = 'localhost';
 $dbuser = 'root';
-$dbpass = '';
-$dbname = 'limesurvey';
+$dbpass = 'cst@mkp1';
+$dbname = 'BBDDMKP';
 
 $surveyID= htmlspecialchars($_GET["surveyID"]);
 $nOperadores=htmlspecialchars($_GET["nOperadores"]);
