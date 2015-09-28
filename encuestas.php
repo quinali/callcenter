@@ -1,19 +1,3 @@
-<?php
-//creamos la sesion
-session_start();
-
-$idOperador = $_SESSION['usuario'];   
-
-
-//validamos si se ha hecho o no el inicio de sesion correctamente
-//si no se ha hecho la sesion nos regresará a index.php
-if(!isset($idOperador)) 
-{
-  header('Location: index.php'); 
-  exit();
-}
-?>
-
 <head>
 	<meta charset="UTF-8" />
 	<!-- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">  -->
@@ -29,10 +13,10 @@ if(!isset($idOperador))
 
 <?php
 
-$dbhost = 'localhost';
-$dbuser = 'root';
-$dbpass = 'cst@mkp1';
-$dbname = 'BBDDMKP';
+require ('validateSession.php');
+require ('config.php');
+
+$idOperador=$usuario;
 
 $conn = mysql_connect($dbhost, $dbuser, $dbpass);
 
@@ -71,7 +55,8 @@ if(! $retval )
 <div 
 style="margin: auto;    width: 60%;    border:3px solid #8AC007;    padding: 10px;">
 
-<table>
+<table id="encuestas">
+<tbody>
 	<tr>
 		<th>Encuestas</th>
 		<th>Pendientes</th>
@@ -80,10 +65,11 @@ style="margin: auto;    width: 60%;    border:3px solid #8AC007;    padding: 10p
 	</tr>
 <?PHP
 
+
+
 while($row = mysql_fetch_assoc($retval))
 	{
-	echo "<tr>";
-	
+	echo "<tr class='alt'>";
 	echo "<td>{$row['sid']}</td>";
 	echo "<td> - </td>";
 	echo "<td> - </td>";
@@ -96,6 +82,6 @@ while($row = mysql_fetch_assoc($retval))
 	
 }
 ?>
-
+</tbody>
 </table>
 </div>

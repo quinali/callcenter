@@ -1,15 +1,22 @@
+
 <?php
+require ('config.php');
+
 /****************************************
 **establecemos conexion con el servidor.
 **nombre del servidor: localhost.
 **Nombre de usuario: root.
 **Contraseña de usuario: root.
 **Si la conexion fallara mandamos un msj 'ha fallado la conexion'**/
-mysql_connect('localhost','root','cst@mkp1')or die ('Ha fallado la conexión: '.mysql_error());
+
+//echo "--------------->".$this->components;
+
+
+mysql_connect($dbhost,$dbuser,$dbpass)or die ('Ha fallado la conexión: '.mysql_error());
 
 /*Luego hacemos la conexión a la base de datos. 
 **De igual manera mandamos un msj si hay algun error*/
-mysql_select_db('BBDDMKP')or die ('Error al seleccionar la Base de Datos: '.mysql_error());
+mysql_select_db($dbname)or die ('Error al seleccionar la Base de Datos: '.mysql_error());
  
 /*caturamos nuestros datos que fueron enviados desde el formulario mediante el metodo POST
 **y los almacenamos en variables.*/

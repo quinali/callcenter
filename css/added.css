@@ -15,5 +15,37 @@ body {background-color:lightgray}
 h1   {color:blue}
 p    {color:green}
 
-.red { color:red}
-.green { color:green}
+.red { color:red  !important}
+.green { color:green !important}
+
+
+
+#encuestas
+{
+font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+width:100%;
+border-collapse:collapse;
+}
+
+
+#encuestas td, #encuestas th 
+{
+font-size:1.2em;
+border:1px solid #98bf21;
+padding:3px 7px 2px 7px;
+}
+#encuestas th 
+{
+font-size:1.4em;
+text-align:left;
+padding-top:5px;
+padding-bottom:4px;
+background-color:#A7C942;
+color:#fff;
+}
+#encuestas tr.alt td 
+{
+color:#000;
+background-color:#EAF2D3;
+}
+
