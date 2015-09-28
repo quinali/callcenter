@@ -86,7 +86,7 @@ mysql_select_db($dbname);
 $sqlToken=
 'select '.
 'tok.firstname,tok.lastname,tok.token,tok.attribute_9,tok.attribute_2,tok.attribute_3,tok.completed,'.
-' srv.`'.$surveyID.'X3X9` as CONTACT,srv.`'.$surveyID.'X3X10` as MOTIV '.
+' srv.`'.$surveyID.'X6X17` as CONTACT,srv.`'.$surveyID.'X6X18` as MOTIV '.
 ', anws.answer '.
 ' from tokens_'.$surveyID.' tok '.
 ' left join ( '.
@@ -94,7 +94,7 @@ $sqlToken=
 '      from survey_'.$surveyID.' srvMax '.
 '    group by srvMax.token) as maxIDTable  on tok.token=maxIDTable.token'.
 ' left join survey_'.$surveyID.' srv on maxIDTable.maxid = srv.id '.
-' left join answers anws on (anws.qid=11 and srv.`'.$surveyID.'X3X11` = anws.code)'.
+' left join answers anws on (anws.qid=18 and srv.`'.$surveyID.'X6X18` = anws.code)'.
 ' where tok.attribute_1='.$idOperador. 
 ' order by tok.tid;';
 
@@ -147,7 +147,7 @@ while($row = mysql_fetch_assoc($retval))
 	
 	//Columna acceso encuesta
 	if($row['completed'] =='N')
-		echo "<td><a href='http://localhost/limesurvey/index.php/survey/index/sid/$surveyID/token/{$row['token']}/lang//newtest/Y'><img src='images/Users-Enter-2-icon.png' height='32' width='32'></a></td>";
+		echo "<td><a href='/limesurvey/index.php/survey/index/sid/$surveyID/token/{$row['token']}/lang//newtest/Y'><img src='images/Users-Enter-2-icon.png' height='32' width='32'></a></td>";
 	else
 		echo "<td></td>";
 	
