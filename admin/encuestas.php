@@ -5,16 +5,16 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
 	<meta name="author" content="JNL" />
 	<link rel="shortcut icon" href="../favicon.ico"> 
-	<link rel="stylesheet" type="text/css" href="css/added.css" />
-	<link rel="stylesheet" type="text/css" href="css/demo.css" />
-    <link rel="stylesheet" type="text/css" href="css/style.css" />
-	<link rel="stylesheet" type="text/css" href="css/animate-custom.css" />
+	<link rel="stylesheet" type="text/css" href="../css/added.css" />
+	<link rel="stylesheet" type="text/css" href="../css/demo.css" />
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+	<link rel="stylesheet" type="text/css" href="../css/animate-custom.css" />
 </head>
 
 <?php
 
-require ('validateSession.php');
-require ('config.php');
+require ('validateAdminSession.php');
+require ('../config.php');
 
 $idOperador=$usuario;
 
@@ -28,6 +28,7 @@ if(! $conn )
 
 //TOTAL DE ENCUESTAS ASIGNADAS Y PENDIENTES PARA ESTE OPERADOR
 mysql_select_db($dbname);
+
 $sqlEncuestas ="select * from surveys where  active='Y' and (expires is NULL OR expires > now())";
 $retval =  mysql_query( $sqlEncuestas, $conn );
 mysql_close($conn);
@@ -36,9 +37,9 @@ mysql_close($conn);
 
 <div class="container">
 	<header>
-        <h1>Listado de <span>Encuestas Activas</span></h1>
+        <h1>Administracion de <span>Encuestas Activas</span></h1>
 <?php		
-		echo "<h1>Bienvenido operador <span>$idOperador</span></h1>" 
+		echo "<h1>Bienvenido <span>$idOperador</span></h1>" 
 ?>
 	</header>
 
@@ -69,10 +70,10 @@ style="margin: auto;    width: 60%;    border:3px solid #8AC007;    padding: 10p
 while($row = mysql_fetch_assoc($retval))
 	{
 	echo "<tr class='alt'>";
-	
 	$idEncuesta = $row['sid'];
 	echo "<td>".$idEncuesta."</td>";
 	
+	//TOTAL DE ENCUESTAS ASIGNADAS Y PENDIENTES PARA ESTE OPERADOR
 	$conn2 = mysql_connect($dbhost, $dbuser, $dbpass);
 	mysql_select_db($dbname);
 	
@@ -81,10 +82,9 @@ while($row = mysql_fetch_assoc($retval))
 			die('Could not connect: ' . mysql_error());
 		}
 
-	//TOTAL DE ENCUESTAS ASIGNADAS Y PENDIENTES PARA ESTE OPERADOR
 	$sqlTotales ="select ".
-				" ( select count(1) from tokens_".$idEncuesta." tok where tok.completed='N' and tok.attribute_1=".$idOperador.") as pdtes,".
-				" ( select count(1) from tokens_".$idEncuesta." tok WHERE tok.attribute_1=".$idOperador.") as tot;";
+				" ( select count(1) from tokens_".$idEncuesta." tok where tok.completed='N' ) as pdtes,".
+				" ( select count(1) from tokens_".$idEncuesta." tok WHERE 1=1 ) as tot;";
 	
 	$retval2 =  mysql_query( $sqlTotales, $conn2 );
 	
@@ -99,11 +99,8 @@ while($row = mysql_fetch_assoc($retval))
 	echo "<td> {$nTotal} </td>";
 	echo "<td> {$nPendientes} </td>";
 	
-	echo "<td>";
-	if($nTotal+$nPendientes != 0)
-		echo"<a href='llamadas.php?surveyID={$idEncuesta}'><img src='images/Users-Enter-2-icon.png' height='32' width='32'></a></td>";
-	echo "</td>";
-
+	
+	echo "<td><a href='administrarEncuesta.php?idSurvey={$row['sid']}'><img src='../images/Users-Enter-2-icon.png' height='32' width='32'></a></td>";
 	
 	
 }
