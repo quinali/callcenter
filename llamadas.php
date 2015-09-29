@@ -1,14 +1,19 @@
 <?php
+
+header('Content-Type: text/html; charset=utf-8');
 require ('config.php');
 require ('validateSession.php');
 
 $surveyID= htmlspecialchars($_GET["surveyID"]);
 $idOperador=$usuario;
 
+
+
 ?>
 
 <head>
 	<meta charset="UTF-8" />
+	 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<!-- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">  -->
 	<title>Listado de encuestas</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
@@ -27,6 +32,7 @@ $idOperador=$usuario;
 
 
 $conn = mysql_connect($dbhost, $dbuser, $dbpass);
+ mysql_set_charset('utf8', $conn);
 
 if(! $conn )
 {
@@ -86,7 +92,7 @@ mysql_select_db($dbname);
 $sqlToken=
 'select '.
 'tok.firstname,tok.lastname,tok.token,tok.attribute_9,tok.attribute_2,tok.attribute_3,tok.completed,'.
-' srv.`'.$surveyID.'X3X9` as CONTACT,srv.`'.$surveyID.'X3X10` as MOTIV '.
+' srv.`'.$surveyID.'X12X83` as CONTACT,srv.`'.$surveyID.'X12X84` as MOTIV '.
 ', anws.answer '.
 ' from tokens_'.$surveyID.' tok '.
 ' left join ( '.
@@ -94,7 +100,7 @@ $sqlToken=
 '      from survey_'.$surveyID.' srvMax '.
 '    group by srvMax.token) as maxIDTable  on tok.token=maxIDTable.token'.
 ' left join survey_'.$surveyID.' srv on maxIDTable.maxid = srv.id '.
-' left join answers anws on (anws.qid=11 and srv.`'.$surveyID.'X3X11` = anws.code)'.
+' left join answers anws on (anws.qid=85 and srv.`'.$surveyID.'X12X85` = anws.code)'.
 ' where tok.attribute_1='.$idOperador. 
 ' order by tok.tid;';
 
