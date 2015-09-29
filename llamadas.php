@@ -92,7 +92,11 @@ mysql_select_db($dbname);
 $sqlToken=
 'select '.
 'tok.firstname,tok.lastname,tok.token,tok.attribute_9,tok.attribute_2,tok.attribute_3,tok.completed,'.
+<<<<<<< HEAD
 ' srv.`'.$surveyID.'X12X83` as CONTACT,srv.`'.$surveyID.'X12X84` as MOTIV '.
+=======
+' srv.`'.$surveyID.'X6X17` as CONTACT,srv.`'.$surveyID.'X6X18` as MOTIV '.
+>>>>>>> 0a329a797447a0905725f725d84a5d377be1ae0a
 ', anws.answer '.
 ' from tokens_'.$surveyID.' tok '.
 ' left join ( '.
@@ -100,7 +104,11 @@ $sqlToken=
 '      from survey_'.$surveyID.' srvMax '.
 '    group by srvMax.token) as maxIDTable  on tok.token=maxIDTable.token'.
 ' left join survey_'.$surveyID.' srv on maxIDTable.maxid = srv.id '.
+<<<<<<< HEAD
 ' left join answers anws on (anws.qid=85 and srv.`'.$surveyID.'X12X85` = anws.code)'.
+=======
+' left join answers anws on (anws.qid=18 and srv.`'.$surveyID.'X6X18` = anws.code)'.
+>>>>>>> 0a329a797447a0905725f725d84a5d377be1ae0a
 ' where tok.attribute_1='.$idOperador. 
 ' order by tok.tid;';
 
@@ -153,7 +161,7 @@ while($row = mysql_fetch_assoc($retval))
 	
 	//Columna acceso encuesta
 	if($row['completed'] =='N')
-		echo "<td><a href='http://localhost/limesurvey/index.php/survey/index/sid/$surveyID/token/{$row['token']}/lang//newtest/Y'><img src='images/Users-Enter-2-icon.png' height='32' width='32'></a></td>";
+		echo "<td><a href='/limesurvey/index.php/survey/index/sid/$surveyID/token/{$row['token']}/lang//newtest/Y'><img src='images/Users-Enter-2-icon.png' height='32' width='32'></a></td>";
 	else
 		echo "<td></td>";
 	
