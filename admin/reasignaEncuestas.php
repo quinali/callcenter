@@ -1,6 +1,5 @@
 <?php
 
-
 require ('validateAdminSession.php');
 require ('../config.php');
 
@@ -8,14 +7,13 @@ $surveyID= htmlspecialchars($_GET["surveyID"]);
 
 $conn = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname);
 
-
 if(! $conn )
 {  die('Could not connect: ' . mysql_error());
 }
 
 $resetSQL='UPDATE tokens_'.$surveyID.' set attribute_1 = NULL where completed="N";';
 
-print($resetSQL);
+//print($resetSQL);
 
 mysqli_query($conn, $resetSQL);
 
@@ -30,10 +28,8 @@ while($row =  mysqli_fetch_assoc($result))
     {
         $operadores[] = $row;
     } 
- 
   
-print_r($operadores);
-
+//print_r($operadores);
 $nOperadores = 	count($operadores);
 mysqli_close($conn);
 
@@ -41,7 +37,7 @@ mysqli_close($conn);
 //Numero de llamadas pendientes
 $conn = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname);
 $nLlamadasPtesSQL = 'select count(1) as num from tokens_'.$surveyID.' where completed="N";';
-print("<p/>".$nLlamadasPtesSQL);
+//print("<p/>".$nLlamadasPtesSQL);
 $result = mysqli_query($conn, $nLlamadasPtesSQL);
 $row = mysqli_fetch_assoc($result);
 $nLlamadasPtes = $row['num'];
@@ -49,15 +45,10 @@ mysqli_close($conn);
 
 $nLlamadasPorOperador = $nLlamadasPtes / $nOperadores;
 
-print_r ("<br/>nOperadores=".$nOperadores);
-print_r ("<br/>nLlamadasPtes=".$nLlamadasPtes."<br/>");
-print_r ("<br/>nLlamadasPorOperador=".$nLlamadasPorOperador);
+//print_r ("<br/>nOperadores=".$nOperadores);
+//print_r ("<br/>nLlamadasPtes=".$nLlamadasPtes);
+//print_r ("<br/>nLlamadasPorOperador=".$nLlamadasPorOperador);
 
-
-/*
-foreach ($operadores as $operador) {
-	echo "Operador es ".$operador['idOperator']."<br/>";
-} */
 
 //Recorro todas los tokens que no se han llamado
 $conn = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname);
@@ -67,26 +58,81 @@ $result = mysqli_query($conn, $nLlamadasPtesSQL);
 
 $nOperador= 1;
 $nToken = 1;
+$idsSQLTokens="(";
+$updateSQL="";
+$updatesArray =[];
 
 while($row = mysqli_fetch_assoc($result))
 {
-	if($nToken < ($nOperador * $nLlamadasPorOperador)){
+	if($nToken > ($nOperador * $nLlamadasPorOperador)){
+	
+		$idsSQLTokens=rtrim($idsSQLTokens, ",")."); ";
+		$indOperador = ($nOperador-1);
+		//echo "[".$operadores[$indOperador]['idOperator']."]<br/>".$idsSQLTokens."<br/>";
+		
+		$updateSQL ='UPDATE tokens_'.$surveyID.' set attribute_1="'.$operadores[$indOperador]['idOperator'].'" where tid in '.$idsSQLTokens;
+		array_push($updatesArray,$updateSQL);
+		
+		//Volvemos a empezar la query
+		$idsSQLTokens="(";
 		$nOperador++;
+	
 	}
 	
-	echo($nToken."-->".$nOperador."--".$operadores[$nOperador]['idOperator']."<br/>");
 	
-	
+	$idsSQLTokens.=$row["tid"].",";
+	//echo("Actualizamos el responsable de la llamada ".$row["tid"]." al operador [".$nOperador."] ".$operadores[$indOperador]['idOperator']."<br/>");
 	$nToken++;
+}
+
+mysqli_close($conn);
+
+//El ultimo operador tambien tiene que ser asignado ;-)
+$idsSQLTokens=rtrim($idsSQLTokens, ",").");";
+$indOperador = ($nOperador-1);
+
+$updateSQL='UPDATE tokens_'.$surveyID.' set attribute_1="'.$operadores[$indOperador]['idOperator'].'" where tid in '.$idsSQLTokens;
+array_push($updatesArray,$updateSQL);
+
+
+//Tras el calculo de la asignación se lanza cada query resultante
+foreach ($updatesArray as $updateQuery){
+
+$conn2 = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname);
+	//echo ("<br>".$updateQuery);
+	
+	if(! $conn2 )
+	{
+		die('Could not connect: ' . mysql_error());
+	}
+	
+	if (mysqli_query($conn2, $updateQuery)) {
+?>
+		
+<?php
+
+	} else {
+		
+		echo "Error updating record: " . mysqli_error($conn2);
+?>
+		<script languaje="javascript">
+			alert("Error en la asignación de llamadas  <?php echo  mysqli_error($conn2); ?>");
+			location.href = "encuestas.php";
+		</script>;
+    
+<?php
+	 }
+	mysqli_close($conn2);
 }
 
 ?>
 
-
 <script languaje="javascript">
-    alert("REASIGNACION  DE LA ENCUESTA <?php echo "$surveyID"; ?> REALIZADA ");
-    location.href = "encuestas.php";
-   </script>
+			alert("Reasignacion de tareas realizada.");
+			location.href = "encuestas.php";
+		</script>;
+
+
 
 
 

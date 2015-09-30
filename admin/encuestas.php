@@ -26,10 +26,10 @@ if(! $conn )
 }
 
 
-//TOTAL DE ENCUESTAS ASIGNADAS Y PENDIENTES PARA ESTE OPERADOR
+//TOTAL DE ENCUESTAS ASIGNADAS Y PENDIENTES PARA ADMINISTRAR
 mysql_select_db($dbname);
 
-$sqlEncuestas ="select * from surveys where  active='Y' and (expires is NULL OR expires > now())";
+$sqlEncuestas ="select * from surveys";
 $retval =  mysql_query( $sqlEncuestas, $conn );
 mysql_close($conn);
 
@@ -63,46 +63,45 @@ style="margin: auto;    width: 60%;    border:3px solid #8AC007;    padding: 10p
 		<th>Totales</th>
 		<th>Acceso</th>
 	</tr>
+	
 <?PHP
 
-
-
-while($row = mysql_fetch_assoc($retval))
-	{
-	echo "<tr class='alt'>";
-	$idEncuesta = $row['sid'];
-	echo "<td>".$idEncuesta."</td>";
-	
-	//TOTAL DE ENCUESTAS ASIGNADAS Y PENDIENTES PARA ESTE OPERADOR
-	$conn2 = mysql_connect($dbhost, $dbuser, $dbpass);
-	mysql_select_db($dbname);
-	
-	if(! $conn2 )
+	while($row = mysql_fetch_assoc($retval))
 		{
-			die('Could not connect: ' . mysql_error());
-		}
+		echo "<tr class='alt'>";
+		$idEncuesta = $row['sid'];
+		echo "<td>".$idEncuesta."</td>";
+		
+		//TOTAL DE ENCUESTAS ASIGNADAS Y PENDIENTES PARA ADMINISTRAR
+		$conn2 = mysql_connect($dbhost, $dbuser, $dbpass);
+		mysql_select_db($dbname);
+		
+		if(! $conn2 )
+			{
+				die('Could not connect: ' . mysql_error());
+			}
 
-	$sqlTotales ="select ".
-				" ( select count(1) from tokens_".$idEncuesta." tok where tok.completed='N' ) as pdtes,".
-				" ( select count(1) from tokens_".$idEncuesta." tok WHERE 1=1 ) as tot;";
-	
-	$retval2 =  mysql_query( $sqlTotales, $conn2 );
-	
-	$row2 = mysql_fetch_assoc($retval2);
-	
-	$nTotal=$row2['tot'];
-	$nPendientes=$row2['pdtes'];
-	 
-	
-	mysql_close($conn2);
-	
-	echo "<td> {$nTotal} </td>";
-	echo "<td> {$nPendientes} </td>";
-	
-	
-	echo "<td><a href='administrarEncuesta.php?idSurvey={$row['sid']}'><img src='../images/Users-Enter-2-icon.png' height='32' width='32'></a></td>";
-	
-	
+		$sqlTotales ="select ".
+					" ( select count(1) from tokens_".$idEncuesta." tok where tok.completed='N' ) as pdtes,".
+					" ( select count(1) from tokens_".$idEncuesta." tok WHERE 1=1 ) as tot;";
+		
+		$retval2 =  mysql_query( $sqlTotales, $conn2 );
+		
+		$row2 = mysql_fetch_assoc($retval2);
+		
+		$nTotal=$row2['tot'];
+		$nPendientes=$row2['pdtes'];
+		 
+		
+		mysql_close($conn2);
+		
+		echo "<td> {$nTotal} </td>";
+		echo "<td> {$nPendientes} </td>";
+		
+		
+		echo "<td><a href='administrarEncuesta.php?idSurvey={$row['sid']}'><img src='../images/Users-Enter-2-icon.png' height='32' width='32'></a></td>";
+		
+		
 }
 ?>
 </tbody>

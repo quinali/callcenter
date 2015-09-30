@@ -15,59 +15,58 @@
 	</head>
 
 <?php
+	require ('validateAdminSession.php');
+	require ('../config.php');
 
-require ('validateAdminSession.php');
-require ('../config.php');
-
-$surveyID= htmlspecialchars($_GET["idSurvey"]);
-
-
-$conn = mysql_connect($dbhost, $dbuser, $dbpass);
-
-if(! $conn )
-{
-  die('Could not connect: ' . mysql_error());
-}
+	$surveyID= htmlspecialchars($_GET["idSurvey"]);
 
 
-mysql_select_db($dbname);
+	$conn = mysql_connect($dbhost, $dbuser, $dbpass);
 
-$sqlOperadores ="SELECT * FROM survey_operators WHERE idSurvey=".$surveyID;
-
-
-
-
-$retval =  mysql_query( $sqlOperadores, $conn );
-
-$operadores = array();
-
-//Sacamos los operadores asignados a este encuesta
-while($row = mysql_fetch_assoc($retval))
+	if(! $conn )
 	{
-	
-		$operadores [$row['idOperator']] = $row['nameOperator'];
-	
+	  die('Could not connect: ' . mysql_error());
 	}
-mysql_close($conn);
 
-//print($sqlOperadores);
-//print_r($operadores);
+
+	mysql_select_db($dbname);
+
+	$sqlOperadores ="SELECT * FROM survey_operators WHERE idSurvey=".$surveyID;
+
+
+
+
+	$retval =  mysql_query( $sqlOperadores, $conn );
+
+	$operadores = array();
+
+	//Sacamos los operadores asignados a este encuesta
+	while($row = mysql_fetch_assoc($retval))
+		{
+		
+			$operadores [$row['idOperator']] = $row['nameOperator'];
+		
+		}
+	mysql_close($conn);
+
+	//print($sqlOperadores);
+	//print_r($operadores);
 
 ?>
 
 
-<div class="container">
-	<header>
-        <h1>Administracion de <span>Encuestas Activas</span></h1>
+	<div class="container">
+		<header>
+			<h1>Administracion de <span>Encuestas Activas</span></h1>
 <?php		
-		echo "<h1>Encuesta: <span>$surveyID</span></h1>" 
+			echo "<h1>Encuesta: <span>$surveyID</span></h1>" 
 ?>
-	<a class='button' href='logout.php'>Cerrar Sesion</a>
-	</header>
-	
-	
+			<a class='button' href='logout.php'>Cerrar Sesion</a>
+		</header>
+		
+		
 	<div style="height:50%; background-color: #CCFF99"> 
-	ASIGNAR OPERADORES
+		ASIGNAR OPERADORES
 	<br/>
 
 	<div align="center">
@@ -77,16 +76,16 @@ mysql_close($conn);
 					<div align="right">
 						<b>No asignados:</b><br/>
 					   <select multiple id='lstBox1' size="10">
-					   <?php
+<?php
 							for ($i = 1; $i <= 50; $i++) {
 								echo $i;
 								
 								if(!array_key_exists ('sev'.$i,$operadores)){
-										print("<option value='sev".$i."'>Sevilla ".$i."</option>");
+										$valOperador = 'sev'.$i;
+										print("<option value='".$valOperador."'>Sevilla ".$i."</option>");
 								}
-								
 							}
-					   ?>
+?>
 						  
 						</select>
 					</div>
@@ -97,35 +96,39 @@ mysql_close($conn);
 				</td>
 				<td style='width:160px;'>
 				<form action="guardarEncuesta.php" method="post">
+					
 					<input type="hidden" name="surveyID" value="<?php echo "$surveyID"?>"  >
+					<input type="text" 	id="operadoresID" >
 					
 					<b>Asignados: </b><br/>
 					<select multiple id='lstBox2' name="lstBox2[]" size="10">
-					<?php
-							foreach ($operadores as $operador)
+<?php
+
+						$fieldValue = array();
+			
+						foreach ($operadores as $operador)
 							{
-								
 								$replaceString= array("sev","Sevilla ");
 								$idOperator = str_replace($replaceString,"",$operador);
-								echo "<option value='sev".$idOperator."'>Sevilla ".$idOperator."</option>";
+								$valOperator = "sev".$idOperator;
+								
+								$fieldValue[$valOperator]='Sevilla '.$idOperator;
+?>
+								<option value='<?php echo $valOperator; ?>'>Sevilla <?php echo $idOperator; ?></option>
+								<script type="text/javascript">$('input#operadoresID').val($('input#operadoresID').val()+'<?php echo $valOperator;?>,');</script>
+<?php								
 							}
+							
+							
+							$out = array_keys($fieldValue);
+?>
+							<script type="text/javascript">$('input#operadoresID').val(<?php echo json_encode($out)?>);</script>
+								
+					</select>
+					<?php 
+						 echo json_encode($out);
 					?>
-		</select>
 					
-					<script>
-						function displayVals() {
-							var multipleValues = $( "#multiple" ).val() || [];
-							$( "p" ).html( "<b>Single:</b> " + singleValues +
-							" <b>Multiple:</b> " + multipleValues.join( ", " ) );
-						}
-	
-						$( "select" ).change( displayVals );
-						displayVals();
-					</script>
- 
-					
-					
-				
 				</td>
 			</tr>
 		</table>
@@ -147,6 +150,22 @@ mysql_close($conn);
 	</div>
 	
 	<script type="text/javascript">
+	
+	function hideFieldRecharge(){
+				
+				fieldContent="[";
+				$("#lstBox2 > option").each(function() {
+					fieldContent+="'"+this.value+"',";
+			});
+			
+			fieldContent+=']';
+			fieldContent=fieldContent.replace(",]","]");
+
+			$('input#operadoresID').val(fieldContent);
+				
+				
+	}
+	
     $(document).ready(function() {
     $('#btnRight').click(function(e) {
         var selectedOpts = $('#lstBox1 option:selected');
@@ -158,6 +177,7 @@ mysql_close($conn);
         $('#lstBox2').append($(selectedOpts).clone());
         $(selectedOpts).remove();
         e.preventDefault();
+		hideFieldRecharge('--RIGHT');
     });
 
     $('#btnLeft').click(function(e) {
@@ -170,6 +190,7 @@ mysql_close($conn);
         $('#lstBox1').append($(selectedOpts).clone());
         $(selectedOpts).remove();
         e.preventDefault();
+		hideFieldRecharge('--LEFT');
     });
 });
 </script>

@@ -63,7 +63,7 @@ mysqli_query($conn, $sqlInsert);
 
 
 <script languaje="javascript">
-    alert("Encuestas <?php echo "$surveyID"; ?> actualizada");
+    alert("Operadores asignados.");
     location.href = "administrarEncuesta.php?idSurvey=<?php echo $surveyID;?>";
 </script>
 
