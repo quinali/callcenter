@@ -1,13 +1,24 @@
 <?php
 
-header('Content-Type: text/html; charset=utf-8');
-require ('config.php');
-require ('validateSession.php');
+header("Content-Type: text/html; charset=utf-8");
+require ("config.php");
+require ("validateSession.php");
 
 $surveyID= htmlspecialchars($_GET["surveyID"]);
 $idOperador=$usuario;
 
 
+$recallField = $_SESSION["def".$surveyID]; 
+
+
+//Procesamos la variable de session defXXXX para sacar los nombre de la columna que almacena la contestacion de rellamada
+
+$recallConfig = explode(",",$recallField );
+
+$anws_qid=$recallConfig[0];
+$CONTACT=$recallConfig[1];
+$MOTIV=$recallConfig[2];
+$anws_code=$recallConfig[3];
 
 ?>
 
@@ -32,18 +43,18 @@ $idOperador=$usuario;
 
 
 $conn = mysql_connect($dbhost, $dbuser, $dbpass);
- mysql_set_charset('utf8', $conn);
+ mysql_set_charset("utf8", $conn);
 
 if(! $conn )
 {
-  die('Could not connect: ' . mysql_error());
+  die("Could not connect: " . mysql_error());
 }
 
 
 //TOTAL DE ENCUESTAS ASIGNADAS Y PENDIENTES PARA ESTE OPERADOR
 mysql_select_db($dbname);
 
-$sqlToProcessCount ='SELECT count(1) FROM `tokens_'.$surveyID.'` WHERE `attribute_1` ='.$idOperador.' AND `completed` ="N";';
+$sqlToProcessCount ="SELECT count(1) FROM `tokens_".$surveyID."` WHERE `attribute_1` ='".$idOperador."' AND `completed` ='N';";
 $nEncuestasPendientes = mysql_result(mysql_query( $sqlToProcessCount, $conn ),0);
 mysql_close($conn);
 
@@ -52,7 +63,7 @@ mysql_close($conn);
 $conn = mysql_connect($dbhost, $dbuser, $dbpass);
 mysql_select_db($dbname);
 
-$sqlTotalCount ='SELECT count(1) FROM `tokens_'.$surveyID.'` WHERE `attribute_1` ="'.$idOperador.'";';
+$sqlTotalCount ="SELECT count(1) FROM `tokens_".$surveyID."` WHERE `attribute_1` ='".$idOperador."';";
 $nEncuestasTotales = mysql_result(mysql_query( $sqlTotalCount, $conn ),0);
 
 mysql_close($conn);
@@ -66,6 +77,8 @@ echo "<h1>Encuestas: <span class='red'>$nEncuestasPendientes</span> / <span clas
 echo "<a class='button' href='logout.php'>Cerrar Sesión</a>";
 
 ?>
+
+
 
 
 <button class="button" onclick="goBack()">Go Back</button>
@@ -90,28 +103,25 @@ $conn = mysql_connect($dbhost, $dbuser, $dbpass);
 mysql_select_db($dbname);
 
 $sqlToken=
-'select '.
-'tok.firstname,tok.lastname,tok.token,tok.attribute_9,tok.attribute_2,tok.attribute_3,tok.completed,'.
-' srv.`'.$surveyID.'X15X105` as CONTACT,srv.`'.$surveyID.'X15X106` as MOTIV '.
-', anws.answer '.
-' from tokens_'.$surveyID.' tok '.
-' left join ( '.
-'    select srvMax.token, max(srvMax.id) as maxid '.
-'      from survey_'.$surveyID.' srvMax '.
-'    group by srvMax.token) as maxIDTable  on tok.token=maxIDTable.token'.
-' left join survey_'.$surveyID.' srv on maxIDTable.maxid = srv.id '.
-' left join answers anws on (anws.qid=107 and srv.`'.$surveyID.'15X107` = anws.code)'.
-' where tok.attribute_1='.$idOperador. 
-' order by tok.tid;';
+"select ".
+"tok.firstname,tok.lastname,tok.token,tok.attribute_9,tok.attribute_2,tok.attribute_3,tok.completed,".
+" srv.`".$surveyID.$CONTACT."` as CONTACT,srv.`".$surveyID.$MOTIV."` as MOTIV ".
+", anws.answer ".
+" from tokens_".$surveyID." tok ".
+" left join ( ".
+"    select srvMax.token, max(srvMax.id) as maxid ".
+"      from survey_".$surveyID." srvMax ".
+"    group by srvMax.token) as maxIDTable  on tok.token=maxIDTable.token".
+" left join survey_".$surveyID." srv on maxIDTable.maxid = srv.id ".
+" left join answers anws on (anws.qid=".$anws_qid." and srv.`".$surveyID.$anws_code."` = anws.code)".
+" where tok.attribute_1='".$idOperador."' order by tok.tid;";
 
-
-
-
+echo $sqlToken;
 
 $retval = mysql_query( $sqlToken, $conn );
 if(! $retval )
 {
-  die('Could not get data: ' . mysql_error());
+  die("Could not get data: " . mysql_error());
 }
 ?>
 
@@ -134,26 +144,26 @@ if(! $retval )
 while($row = mysql_fetch_assoc($retval))
 	{
 	echo "<tr>";
-	echo "<td>{$row['firstname']} {$row['lastname']}</td>";
-	echo "<td>{$row['attribute_9']}</td>";
-	echo "<td>{$row['attribute_2']}</td>";
-	echo "<td>{$row['attribute_3']}</td>";
+	echo "<td>{$row["firstname"]} {$row["lastname"]}</td>";
+	echo "<td>{$row["attribute_9"]}</td>";
+	echo "<td>{$row["attribute_2"]}</td>";
+	echo "<td>{$row["attribute_3"]}</td>";
 	
 	//Columna emitida
-	if($row['completed'] =='N')
+	if($row["completed"] =="N")
 		echo "<td></td>";
 	else
 		echo "<td><img src='images/green-telephon-icon.png' height='32' width='32'></td>";
 	
 	//Columna recuperar
-	if($row['CONTACT'] =='N' and $row['MOTIV'] =='A1')
-		echo "<td><a href='./rellamar.php?surveyID={$surveyID}&token={$row['token']}'><img src='images/pink-telephon-icon.png' height='32' width='32'> {$row['answer']}</a> </td>";
+	if($row["CONTACT"] =="N" and $row["MOTIV"] =="A1")
+		echo "<td><a href='./rellamar.php?surveyID={$surveyID}&token={$row["token"]}'><img src='images/pink-telephon-icon.png' height='32' width='32'> {$row["answer"]}</a> </td>";
 	else
 		echo "<td></td>";
 	
 	//Columna acceso encuesta
-	if($row['completed'] =='N')
-		echo "<td><a href='/limesurvey/index.php/survey/index/sid/$surveyID/token/{$row['token']}/lang//newtest/Y'><img src='images/Users-Enter-2-icon.png' height='32' width='32'></a></td>";
+	if($row["completed"] =="N")
+		echo "<td><a href='/limesurvey/index.php/survey/index/sid/$surveyID/token/{$row["token"]}/lang//newtest/Y'><img src='images/Users-Enter-2-icon.png' height='32' width='32'></a></td>";
 	else
 		echo "<td></td>";
 	

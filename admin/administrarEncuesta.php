@@ -19,8 +19,28 @@
 	require ('../config.php');
 
 	$surveyID= htmlspecialchars($_GET["idSurvey"]);
+	$conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
+	
+	// Check connection
+	if (!$conn) {
+		die("Connection failed: " . mysqli_connect_error());
+	}
 
-
+	//Recupera el nombre de la encuesta
+	$titleSql = 'select surveyls_title from surveys_languagesettings where surveyls_survey_id ='.$surveyID;
+	$result = mysqli_query($conn, $titleSql);
+	
+	if (mysqli_num_rows($result) > 0) {
+		$row = mysqli_fetch_assoc($result);
+		$title = $row["surveyls_title"];
+	}
+	
+	
+	mysqli_close($conn);
+	
+	
+	
+	
 	$conn = mysql_connect($dbhost, $dbuser, $dbpass);
 
 	if(! $conn )
@@ -32,9 +52,6 @@
 	mysql_select_db($dbname);
 
 	$sqlOperadores ="SELECT * FROM survey_operators WHERE idSurvey=".$surveyID;
-
-
-
 
 	$retval =  mysql_query( $sqlOperadores, $conn );
 
@@ -59,7 +76,7 @@
 		<header>
 			<h1>Administracion de <span>Encuestas Activas</span></h1>
 <?php		
-			echo "<h1>Encuesta: <span>$surveyID</span></h1>" 
+			echo "<h1>Encuesta: <span>$title</span></h1>" 
 ?>
 			<a class='button' href='logout.php'>Cerrar Sesion</a>
 		</header>
@@ -95,10 +112,7 @@
 					<br/><input type='button' id='btnLeft' value ='  <  '/>
 				</td>
 				<td style='width:160px;'>
-				<form action="guardarEncuesta.php" method="post">
-					
-					<input type="hidden" name="surveyID" value="<?php echo "$surveyID"?>"  >
-					<input type="text" 	id="operadoresID" >
+				
 					
 					<b>Asignados: </b><br/>
 					<select multiple id='lstBox2' name="lstBox2[]" size="10">
@@ -119,21 +133,22 @@
 <?php								
 							}
 							
-							
 							$out = array_keys($fieldValue);
+							
 ?>
-							<script type="text/javascript">$('input#operadoresID').val(<?php echo json_encode($out)?>);</script>
+							
 								
 					</select>
-					<?php 
-						 echo json_encode($out);
-					?>
-					
 				</td>
 			</tr>
 		</table>
 		<br/>
-		<input type="submit" value="Guardar">
+		
+		<form action="guardarEncuesta.php" method="post">
+					<input type="hidden" name="surveyID" value="<?php echo "$surveyID"?>"  >
+					<input type="hidden" 	id="operadoresID" name="operadoresID" >
+					<script type="text/javascript">$('input#operadoresID').val(<?php echo json_encode($out)?>);</script>
+					<input type="submit" value="Guardar">
 		</form>	
 	</div>
  	
@@ -170,27 +185,27 @@
     $('#btnRight').click(function(e) {
         var selectedOpts = $('#lstBox1 option:selected');
         if (selectedOpts.length == 0) {
-            alert("Nothing to move.");
+            //alert("Nothing to move.");
             e.preventDefault();
         }
 
         $('#lstBox2').append($(selectedOpts).clone());
         $(selectedOpts).remove();
         e.preventDefault();
-		hideFieldRecharge('--RIGHT');
+		hideFieldRecharge();
     });
 
     $('#btnLeft').click(function(e) {
         var selectedOpts = $('#lstBox2 option:selected');
         if (selectedOpts.length == 0) {
-            alert("Nothing to move.");
+            //alert("Nothing to move.");
             e.preventDefault();
         }
 
         $('#lstBox1').append($(selectedOpts).clone());
         $(selectedOpts).remove();
         e.preventDefault();
-		hideFieldRecharge('--LEFT');
+		hideFieldRecharge();
     });
 });
 </script>

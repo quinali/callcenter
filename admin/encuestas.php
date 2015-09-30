@@ -29,7 +29,7 @@ if(! $conn )
 //TOTAL DE ENCUESTAS ASIGNADAS Y PENDIENTES PARA ADMINISTRAR
 mysql_select_db($dbname);
 
-$sqlEncuestas ="select * from surveys";
+$sqlEncuestas ="select srv.sid,srvLang.surveyls_title from surveys srv left join surveys_languagesettings srvLang on srv.sid = srvLang.surveyls_survey_id";
 $retval =  mysql_query( $sqlEncuestas, $conn );
 mysql_close($conn);
 
@@ -70,7 +70,8 @@ style="margin: auto;    width: 60%;    border:3px solid #8AC007;    padding: 10p
 		{
 		echo "<tr class='alt'>";
 		$idEncuesta = $row['sid'];
-		echo "<td>".$idEncuesta."</td>";
+		$titleEncuesta = $row['surveyls_title'];
+		echo "<td>".$titleEncuesta."</td>";
 		
 		//TOTAL DE ENCUESTAS ASIGNADAS Y PENDIENTES PARA ADMINISTRAR
 		$conn2 = mysql_connect($dbhost, $dbuser, $dbpass);

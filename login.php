@@ -12,6 +12,27 @@ require ('config.php');
 //echo "--------------->".$this->components;
 
 
+// Create connection
+$conn = mysql_connect($dbhost, $dbuser, $dbpass);
+// Check connection
+if(! $conn )
+{
+  die('Could not connect: ' . mysql_error());
+}
+
+mysql_select_db($dbname);
+
+//Selecionamos la definicon del campo de rellamada para cada encuesta
+$recallFieldSql="select `key`, value from plugin_settings where model='mkp_recall'";
+$retval = mysql_query( $recallFieldSql, $conn );
+
+while($row = mysql_fetch_assoc($retval)){
+       // $_SESSION['def'.$row['key']]=$row['value'];
+		?><script> alert("SI <?php echo 'def'.$row['key']."=". $row['value']; ?>");</script><?php
+	}
+
+
+
 mysql_connect($dbhost,$dbuser,$dbpass)or die ('Ha fallado la conexión: '.mysql_error());
 
 /*Luego hacemos la conexión a la base de datos. 
@@ -40,6 +61,11 @@ $result = mysql_query("SELECT * FROM users WHERE users_name = '$usuario'");
   session_start();  
   //Almacenamos el nombre de usuario en una variable de sesión usuario
   $_SESSION['usuario'] = $usuario;  
+  
+  
+  $_SESSION['def759124']="12,X12X83,X12X84,X12X85";
+$_SESSION['def996661']="15,15X105,15X106,15X107";
+  
   //Redireccionamos a la pagina: index.php
   header("Location: encuestas.php");  
  }

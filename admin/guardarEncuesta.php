@@ -1,10 +1,27 @@
+<head>
+	<meta charset="UTF-8" />
+	<!-- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">  -->
+	<title>Resultado de actualizacion</title>
+</head>
+
 <?php
 
 require ('validateAdminSession.php');
 require ('../config.php');
 
 $surveyID= $_POST["surveyID"];
-$operadores = $_POST["lstBox2"];
+
+if (empty($_POST["operadoresID"])) 
+{
+?>	
+	<script languaje="javascript">
+		alert("No hay nada que asignar.");
+		location.href = "administrarEncuesta.php?idSurvey=<?php echo $surveyID;?>";
+	</script>
+<?php
+}else{
+	$operadores = $_POST["operadoresID"];
+}
 
 $conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
 
@@ -37,9 +54,10 @@ if (!$conn) {
 
 $sqlInsert='INSERT INTO survey_operators(idSurvey,idOperator,nameOperator) values ';
 
-foreach ($operadores as $operador)
+
+foreach (explode(",",$operadores) as $operador)
 {	
-	$replaceString= array("sev","Sevilla");
+	$replaceString= array("sev","Sevilla","[","]","'",",");
 	$idOperator = str_replace($replaceString,"",$operador);
 		
 	$sqlInsert .= "(".$surveyID.",'sev".$idOperator."','Sevilla ".$idOperator."'),";
@@ -55,11 +73,7 @@ mysqli_query($conn, $sqlInsert);
 ?>
 
 
-<head>
-	<meta charset="UTF-8" />
-	<!-- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">  -->
-	<title>Resultado de actualizacion</title>
-</head>
+
 
 
 <script languaje="javascript">

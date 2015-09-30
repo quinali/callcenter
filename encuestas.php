@@ -28,7 +28,7 @@ if(! $conn )
 
 //TOTAL DE ENCUESTAS ASIGNADAS Y PENDIENTES PARA ESTE OPERADOR
 mysql_select_db($dbname);
-$sqlEncuestas ="select * from surveys where  active='Y' and (expires is NULL OR expires > now())";
+$sqlEncuestas ="select srv.sid,srvLang.surveyls_title from surveys srv left join surveys_languagesettings srvLang on srv.sid = srvLang.surveyls_survey_id where  srv.active='Y' and (srv.expires is NULL OR srv.expires > now())";
 $retval =  mysql_query( $sqlEncuestas, $conn );
 mysql_close($conn);
 
@@ -38,7 +38,7 @@ mysql_close($conn);
 	<header>
         <h1>Listado de <span>Encuestas Activas</span></h1>
 <?php		
-		echo "<h1>Bienvenido operador <span>$idOperador</span></h1>" 
+		echo "<h1>Bienvenido operador <span>".strtoupper ($idOperador)."</span></h1>" 
 ?>
 	</header>
 
@@ -71,7 +71,8 @@ while($row = mysql_fetch_assoc($retval))
 	echo "<tr class='alt'>";
 	
 	$idEncuesta = $row['sid'];
-	echo "<td>".$idEncuesta."</td>";
+	$tituloEncuesta = $row['surveyls_title'];
+	echo "<td>".$tituloEncuesta."</td>";
 	
 	$conn2 = mysql_connect($dbhost, $dbuser, $dbpass);
 	mysql_select_db($dbname);
@@ -83,8 +84,8 @@ while($row = mysql_fetch_assoc($retval))
 
 	//TOTAL DE ENCUESTAS ASIGNADAS Y PENDIENTES PARA ESTE OPERADOR
 	$sqlTotales ="select ".
-				" ( select count(1) from tokens_".$idEncuesta." tok where tok.completed='N' and tok.attribute_1=".$idOperador.") as pdtes,".
-				" ( select count(1) from tokens_".$idEncuesta." tok WHERE tok.attribute_1=".$idOperador.") as tot;";
+				" ( select count(1) from tokens_".$idEncuesta." tok where tok.completed='N' and tok.attribute_1='".$idOperador."') as pdtes,".
+				" ( select count(1) from tokens_".$idEncuesta." tok WHERE tok.attribute_1='".$idOperador."') as tot;";
 	
 	$retval2 =  mysql_query( $sqlTotales, $conn2 );
 	
