@@ -63,8 +63,8 @@ $result = mysql_query("SELECT * FROM users WHERE users_name = '$usuario'");
   $_SESSION['usuario'] = $usuario;  
   
   
-  $_SESSION['def759124']="12,X12X83,X12X84,X12X85";
-$_SESSION['def996661']="15,15X105,15X106,15X107";
+  $_SESSION['def759124']="85,X12X83,X12X84,X12X85";
+  $_SESSION['def996661']="77,X10X75,X10X76,X10X77";
   
   //Redireccionamos a la pagina: index.php
   header("Location: encuestas.php");  

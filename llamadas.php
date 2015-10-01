@@ -20,6 +20,11 @@ $CONTACT=$recallConfig[1];
 $MOTIV=$recallConfig[2];
 $anws_code=$recallConfig[3];
 
+//echo $anws_qid.'<br/>';
+//echo $CONTACT.'<br/>';
+//echo $MOTIV.'<br/>';
+//echo $anws_code.'<br/>';
+
 ?>
 
 <head>
@@ -116,7 +121,7 @@ $sqlToken=
 " left join answers anws on (anws.qid=".$anws_qid." and srv.`".$surveyID.$anws_code."` = anws.code)".
 " where tok.attribute_1='".$idOperador."' order by tok.tid;";
 
-echo $sqlToken;
+//echo $sqlToken;
 
 $retval = mysql_query( $sqlToken, $conn );
 if(! $retval )
