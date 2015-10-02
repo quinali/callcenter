@@ -3,18 +3,26 @@ require ('config.php');
 require ('validateSession.php');
 
 $surveyID= htmlspecialchars($_GET["surveyID"]);
-$limeToken=  htmlspecialchars($_GET["token"]);
+$tid=  htmlspecialchars($_GET["tid"]);
 
-$conn = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
-
+$conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
 
 // Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-} 
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
+}
 
+$sql= 'SELECT tid,token FROM tokens_'.$surveyID.' WHERE tid="'.$tid.'" ;';
+$result = mysqli_query($conn, $sql);
+$row = mysqli_fetch_assoc($result);
+
+$limeToken=$row['token'];
+
+mysqli_close($conn);
+
+
+$conn = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
 $updateSql = 'update tokens_'.$surveyID.' set completed="N" where token="'.$limeToken.'" ;';
-
 
 echo "SQL=".$updateSql;
 
@@ -30,7 +38,7 @@ $conn->close();
 
 
 //Recargarmos la página de llamadas
-header("Location: llamadas.php?surveyID=".$surveyID);  
+header("Location: llamadas.php?surveyID=".$surveyID."#tok".$tid);  
 
 ?>
 

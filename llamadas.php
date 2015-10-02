@@ -6,10 +6,32 @@ require ("validateSession.php");
 
 $surveyID= htmlspecialchars($_GET["surveyID"]);
 $idOperador=$usuario;
+$numResultaPerPag=15;
+$totalPages =5;
+$totalCalls=1502;
+
+$totalPages = ceil($totalCalls / $numResultaPerPag);
 
 
 $recallField = $_SESSION["def".$surveyID]; 
 
+if(!isset($_GET['page'])){
+    $_GET['page'] = 0;
+}else{
+    // Convert the page number to an integer
+    $_GET['page'] = (int)$_GET['page'];
+}
+
+// If the page number is less than 1, make it 1.
+if($_GET['page'] < 1){
+    $_GET['page'] = 1;
+    // Check that the page is below the last page
+}else if($_GET['page'] > $totalPages){
+    $_GET['page'] = $totalPages;
+}
+$page=$_GET['page'];
+
+$startCall = ($_GET['page'] - 1) * $numResultaPerPag;
 
 //Procesamos la variable de session defXXXX para sacar los nombre de la columna que almacena la contestacion de rellamada
 $recallConfig = explode(",",$recallField );
@@ -32,6 +54,11 @@ $anws_code=$recallConfig[3];
 	<link rel="stylesheet" type="text/css" href="css/added.css" />
 	<link rel="stylesheet" type="text/css" href="css/demo.css" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
+	
+	
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<!--link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css"-->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 	
 </head>
 
@@ -73,11 +100,12 @@ mysql_close($conn);
 
 echo "<h1>OPERADOR: $idOperador</h1>";
 echo "<h1>Encuestas: <span class='red'>$nEncuestasPendientes</span> / <span class='green'>$nEncuestasTotales</span></h1>";
-echo "<a class='button' href='logout.php'>Cerrar Sesión</a>";
+
+echo "<a class='btn btn-info' href='logout.php'>Cerrar Sesión</a>";
 
 ?>
 
-<a class='button' href='encuestas.php'>Go Back</a>
+<a class='btn btn-info' href='encuestas.php'>Volver</a>
 
 </header>
 
@@ -99,9 +127,11 @@ mysql_query("SET character_set_results = 'utf8', character_set_client = 'utf8', 
 
 mysql_select_db($dbname);
 
+
+
 $sqlToken=
 "select ".
-"tok.firstname,tok.lastname,tok.token,tok.attribute_9,tok.attribute_2,tok.attribute_3,tok.completed,tok.usesleft as intentos,".
+"tok.tid,tok.firstname,tok.lastname,tok.token,tok.attribute_9,tok.attribute_2,tok.attribute_3,tok.completed,tok.usesleft as intentos,".
 " srv.`".$surveyID.$CONTACT."` as CONTACT,srv.`".$surveyID.$MOTIV."` as MOTIV ".
 ", anws.answer ".
 " from tokens_".$surveyID." tok ".
@@ -111,7 +141,9 @@ $sqlToken=
 "    group by srvMax.token) as maxIDTable  on tok.token=maxIDTable.token".
 " left join survey_".$surveyID." srv on maxIDTable.maxid = srv.id ".
 " left join answers anws on (anws.qid=".$anws_qid." and srv.`".$surveyID.$anws_code."` = anws.code)".
-" where tok.attribute_1='".$idOperador."' order by tok.tid;";
+" where tok.attribute_1='".$idOperador."' order by tok.tid ".
+" LIMIT ".$page.",".$numResultaPerPag;
+
 
 //echo $sqlToken;
 
@@ -123,14 +155,14 @@ if(! $retval )
 ?>
 
 
-<div style="margin-top: 20px;margin-left:45px; width:80%;">
+<div style="margin-top: 20px;margin-left:45px; width:100%;">
 <table id="encuestas">
 	<tbody>
 		<tr>
 			<th>Nombre</th>
 			<th>Teléfono 1</th>
 			<th>Teléfono 2</th>
-			<th>Teléfono Móvil</th>
+			<th>Móvil</th>
 			<th>Emitida</th>
 			<th>Recuperar</th>
 			<th>Intentos</th>
@@ -141,7 +173,7 @@ if(! $retval )
 
 while($row = mysql_fetch_assoc($retval))
 	{
-	echo "<tr>";
+	echo "<tr id='tok".$row["tid"]."' >";
 	echo "<td>{$row["firstname"]} {$row["lastname"]}</td>";
 	echo "<td>{$row["attribute_9"]}</td>";
 	echo "<td>{$row["attribute_2"]}</td>";
@@ -151,15 +183,15 @@ while($row = mysql_fetch_assoc($retval))
 	if($row["completed"] =="N")
 		echo "<td></td>";
 	else
-		echo "<td><img src='images/green-telephon-icon.png' height='32' width='32'></td>";
+		echo "<td><span class='glyphicon glyphicon-earphone'></span></td>";
 	
 	//Columna recuperar
-	if($row["CONTACT"] =="N" and $row["MOTIV"] =="A1"){
-		echo "<td><a href='./rellamar.php?surveyID={$surveyID}&token={$row["token"]}'><img src='images/pink-telephon-icon.png' height='32' width='32'> {$row["answer"]}</a> </td>";
-	} else if ($row["CONTACT"] !== "N" and $row["MOTIV"] =="A1"){
-		echo "<td><a href='./rellamar.php?surveyID={$surveyID}&token={$row["token"]}'><img src='images/orange-telephon-icon.png' height='32' width='32'> {$row["answer"]}</a> </td>";
+	if ($row["completed"] =="N" and $row["CONTACT"] == "N" and $row["MOTIV"] =="A1"){
+		echo "<td><span class='orange'>{$row["answer"]}</span> </td>";
 		
-	}else {	echo "<td></td>";}
+	}else if($row["CONTACT"] =="N" and $row["MOTIV"] =="A1"){
+		echo "<td><a href='./rellamar.php?surveyID={$surveyID}&tid={$row["tid"]}'><span class='red glyphicon glyphicon-repeat'></span><span class='red'>{$row["answer"]}</span></a> </td>";
+	} else {	echo "<td></td>";}
 	
 	$nIntentos = (-1*$row["intentos"]+1);
 	
@@ -176,6 +208,22 @@ while($row = mysql_fetch_assoc($retval))
 ?>
 	</tbody>
 </table>
+
+
+<ul class="pagination">
+<?php
+
+foreach(range(1, $totalPages) as $page){
+   
+	
+	 if($page == $_GET['page']){
+        echo '<li class="active"><a href="llamadas.php?surveyID='.$surveyID.'&page=' . $page . '">' . $page . '</a></li>';
+    }else if($page == 1 || $page == $totalPages || ($page >= $_GET['page'] - 2 && $page <= $_GET['page'] + 2)){
+        echo '<li><a href="llamadas.php?surveyID='.$surveyID.'&page=' . $page . '">' . $page . '</a></li>';
+    }
+}
+?>
+</ul>
 </div>
 
 

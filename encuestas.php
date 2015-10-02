@@ -9,6 +9,12 @@
 	<link rel="stylesheet" type="text/css" href="css/demo.css" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
 	<link rel="stylesheet" type="text/css" href="css/animate-custom.css" />
+	
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<!--link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css"-->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	
+	
 </head>
 
 <?php
@@ -45,7 +51,7 @@ mysql_close($conn);
 
 <?PHP
 
-echo "<a class='button' href='logout.php'>Cerrar Sesión</a>";
+echo "<a class='btn btn-info' href='logout.php'>Cerrar Sesión</a>";
 
 if(! $retval )
 {
