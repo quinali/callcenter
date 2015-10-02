@@ -101,7 +101,7 @@ mysql_select_db($dbname);
 
 $sqlToken=
 "select ".
-"tok.firstname,tok.lastname,tok.token,tok.attribute_9,tok.attribute_2,tok.attribute_3,tok.completed,".
+"tok.firstname,tok.lastname,tok.token,tok.attribute_9,tok.attribute_2,tok.attribute_3,tok.completed,tok.usesleft as intentos,".
 " srv.`".$surveyID.$CONTACT."` as CONTACT,srv.`".$surveyID.$MOTIV."` as MOTIV ".
 ", anws.answer ".
 " from tokens_".$surveyID." tok ".
@@ -133,6 +133,7 @@ if(! $retval )
 			<th>Teléfono Móvil</th>
 			<th>Emitida</th>
 			<th>Recuperar</th>
+			<th>Intentos</th>
 			<th>Encuesta</th>
 		</tr>
 
@@ -153,10 +154,16 @@ while($row = mysql_fetch_assoc($retval))
 		echo "<td><img src='images/green-telephon-icon.png' height='32' width='32'></td>";
 	
 	//Columna recuperar
-	if($row["CONTACT"] =="N" and $row["MOTIV"] =="A1")
+	if($row["CONTACT"] =="N" and $row["MOTIV"] =="A1"){
 		echo "<td><a href='./rellamar.php?surveyID={$surveyID}&token={$row["token"]}'><img src='images/pink-telephon-icon.png' height='32' width='32'> {$row["answer"]}</a> </td>";
-	else
-		echo "<td></td>";
+	} else if ($row["CONTACT"] !== "N" and $row["MOTIV"] =="A1"){
+		echo "<td><a href='./rellamar.php?surveyID={$surveyID}&token={$row["token"]}'><img src='images/orange-telephon-icon.png' height='32' width='32'> {$row["answer"]}</a> </td>";
+		
+	}else {	echo "<td></td>";}
+	
+	$nIntentos = (-1*$row["intentos"]+1);
+	
+	echo "<td>". (($nIntentos==0) ? " " : $nIntentos) ."</td>";
 	
 	//Columna acceso encuesta
 	if($row["completed"] =="N")
