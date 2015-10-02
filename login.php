@@ -60,7 +60,10 @@ $result = mysql_query("SELECT * FROM users WHERE users_name = '$usuario'");
 		$_SESSION[$defEcuestaKey]=$defEcuestaValue;
   }
   
- //Redireccionamos a la pagina: index.php
+//Redireccionamos a la pagina: index.php
+//  $_SESSION['def759124']="85,X12X83,X12X84,X12X85";
+//  $_SESSION['def996661']="77,X10X75,X10X76,X10X77";
+
   header("Location: encuestas.php");  
  }
  else

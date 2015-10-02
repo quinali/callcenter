@@ -20,7 +20,6 @@ $MOTIV=$recallConfig[2];
 $anws_code=$recallConfig[3];
 
 //echo	$anws_qid.','.$CONTACT.','.$MOTIV.','.$anws_code;
-
 ?>	 
 <head>
 	<meta charset="UTF-8" />
@@ -115,7 +114,6 @@ $sqlToken=
 " where tok.attribute_1='".$idOperador."' order by tok.tid;";
 
 //echo $sqlToken;
-
 
 $retval = mysql_query( $sqlToken, $conn );
 if(! $retval )
