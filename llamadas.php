@@ -31,7 +31,7 @@ if($_GET['page'] < 1){
 }
 $page=$_GET['page'];
 
-$startCall = ($_GET['page'] - 1) * $numResultaPerPag;
+
 
 //Procesamos la variable de session defXXXX para sacar los nombre de la columna que almacena la contestacion de rellamada
 $recallConfig = explode(",",$recallField );
@@ -129,6 +129,8 @@ mysql_select_db($dbname);
 
 
 
+$startCall = ($_GET['page'] - 1) * $numResultaPerPag;
+
 $sqlToken=
 "select ".
 "tok.tid,tok.firstname,tok.lastname,tok.token,tok.attribute_9,tok.attribute_2,tok.attribute_3,tok.completed,tok.usesleft as intentos,".
@@ -142,7 +144,7 @@ $sqlToken=
 " left join survey_".$surveyID." srv on maxIDTable.maxid = srv.id ".
 " left join answers anws on (anws.qid=".$anws_qid." and srv.`".$surveyID.$anws_code."` = anws.code)".
 " where tok.attribute_1='".$idOperador."' order by tok.tid ".
-" LIMIT ".$page.",".$numResultaPerPag;
+" LIMIT ".$startCall.",".$numResultaPerPag;
 
 
 //echo $sqlToken;
