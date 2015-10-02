@@ -12,7 +12,6 @@ $recallField = $_SESSION["def".$surveyID];
 
 
 //Procesamos la variable de session defXXXX para sacar los nombre de la columna que almacena la contestacion de rellamada
-
 $recallConfig = explode(",",$recallField );
 
 $anws_qid=$recallConfig[0];
@@ -20,8 +19,9 @@ $CONTACT=$recallConfig[1];
 $MOTIV=$recallConfig[2];
 $anws_code=$recallConfig[3];
 
-?>
+//echo	$anws_qid.','.$CONTACT.','.$MOTIV.','.$anws_code;
 
+?>	 
 <head>
 	<meta charset="UTF-8" />
 	 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -78,15 +78,11 @@ echo "<a class='button' href='logout.php'>Cerrar Sesión</a>";
 
 ?>
 
+<a class='button' href='encuestas.php'>Go Back</a>
 
-
-
-<button class="button" onclick="goBack()">Go Back</button>
 </header>
 
-<script>function goBack() { window.history.back();
-}
-</script>
+
 
 <?php
 
@@ -100,6 +96,8 @@ if($nEncuestasTotales ==0 )
 <?php
 } else {
 $conn = mysql_connect($dbhost, $dbuser, $dbpass);
+mysql_query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'", $conn);
+
 mysql_select_db($dbname);
 
 $sqlToken=
@@ -116,7 +114,8 @@ $sqlToken=
 " left join answers anws on (anws.qid=".$anws_qid." and srv.`".$surveyID.$anws_code."` = anws.code)".
 " where tok.attribute_1='".$idOperador."' order by tok.tid;";
 
-echo $sqlToken;
+//echo $sqlToken;
+
 
 $retval = mysql_query( $sqlToken, $conn );
 if(! $retval )

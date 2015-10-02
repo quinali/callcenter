@@ -20,6 +20,7 @@
 
 	$surveyID= htmlspecialchars($_GET["idSurvey"]);
 	$conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
+	mysqli_query( $conn,"SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
 	
 	// Check connection
 	if (!$conn) {
@@ -79,6 +80,7 @@
 			echo "<h1>Encuesta: <span>$title</span></h1>" 
 ?>
 			<a class='button' href='logout.php'>Cerrar Sesion</a>
+			<a class='button' href='encuestas.php'>Go Back</a>
 		</header>
 		
 		

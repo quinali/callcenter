@@ -19,6 +19,7 @@ require ('../config.php');
 $idOperador=$usuario;
 
 $conn = mysql_connect($dbhost, $dbuser, $dbpass);
+mysql_query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'", $conn);
 
 if(! $conn )
 {
@@ -43,9 +44,12 @@ mysql_close($conn);
 ?>
 	</header>
 
+	
+	<a class='button' href='logout.php'>Cerrar Sesión</a>
+	
 <?PHP
 
-echo "<a class='button' href='logout.php'>Cerrar Sesión</a>";
+
 
 if(! $retval )
 {
@@ -53,14 +57,16 @@ if(! $retval )
 }
 ?>
 <div 
-style="margin: auto;    width: 60%;    border:3px solid #8AC007;    padding: 10px;">
+style="border:3px solid #8AC007;padding: 10px; margin-top: 20px;margin-left:45px; width:80%;">
 
 <table id="encuestas">
 <tbody>
 	<tr>
-		<th>Encuestas</th>
+		<th>Encuesta</th>
 		<th>Pendientes</th>
 		<th>Totales</th>
+		<th>Operad.Asoc</th>
+		<th>Operad.Tot</th>
 		<th>Acceso</th>
 	</tr>
 	
@@ -84,7 +90,9 @@ style="margin: auto;    width: 60%;    border:3px solid #8AC007;    padding: 10p
 
 		$sqlTotales ="select ".
 					" ( select count(1) from tokens_".$idEncuesta." tok where tok.completed='N' ) as pdtes,".
-					" ( select count(1) from tokens_".$idEncuesta." tok WHERE 1=1 ) as tot;";
+					" ( select count(1) from tokens_".$idEncuesta." tok WHERE 1=1 ) as tot,".
+					" ( select count(1) from (select distinct(attribute_1) from tokens_".$idEncuesta." tok group by attribute_1) as difOperadores ) as nOperadoresAsignados,".
+					" (select count(1) from survey_operators where idSurvey=".$idEncuesta.") as nOperadores;";
 		
 		$retval2 =  mysql_query( $sqlTotales, $conn2 );
 		
@@ -92,14 +100,16 @@ style="margin: auto;    width: 60%;    border:3px solid #8AC007;    padding: 10p
 		
 		$nTotal=$row2['tot'];
 		$nPendientes=$row2['pdtes'];
+		$nOperadoresAsignados=$row2['nOperadoresAsignados'];
+		$nOperadores=$row2['nOperadores'];
 		 
 		
 		mysql_close($conn2);
 		
 		echo "<td> {$nTotal} </td>";
 		echo "<td> {$nPendientes} </td>";
-		
-		
+		echo "<td> {$nOperadoresAsignados} </td>";
+		echo "<td> {$nOperadores} </td>";
 		echo "<td><a href='administrarEncuesta.php?idSurvey={$row['sid']}'><img src='../images/Users-Enter-2-icon.png' height='32' width='32'></a></td>";
 		
 		

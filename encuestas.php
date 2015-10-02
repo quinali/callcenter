@@ -19,6 +19,7 @@ require ('config.php');
 $idOperador=$usuario;
 
 $conn = mysql_connect($dbhost, $dbuser, $dbpass);
+mysql_query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'", $conn);
 
 if(! $conn )
 {
@@ -52,7 +53,7 @@ if(! $retval )
 }
 ?>
 <div 
-style="margin: auto;    width: 60%;    border:3px solid #8AC007;    padding: 10px;">
+style="border:3px solid #8AC007;padding: 10px; margin-top: 20px;margin-left:45px; width:80%;">
 
 <table id="encuestas">
 <tbody>
@@ -97,8 +98,9 @@ while($row = mysql_fetch_assoc($retval))
 	
 	mysql_close($conn2);
 	
-	echo "<td> {$nTotal} </td>";
 	echo "<td> {$nPendientes} </td>";
+	echo "<td> {$nTotal} </td>";
+	
 	
 	echo "<td>";
 	if($nTotal+$nPendientes != 0)

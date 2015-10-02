@@ -2,16 +2,6 @@
 <?php
 require ('config.php');
 
-/****************************************
-**establecemos conexion con el servidor.
-**nombre del servidor: localhost.
-**Nombre de usuario: root.
-**Contraseña de usuario: root.
-**Si la conexion fallara mandamos un msj 'ha fallado la conexion'**/
-
-//echo "--------------->".$this->components;
-
-
 // Create connection
 $conn = mysql_connect($dbhost, $dbuser, $dbpass);
 // Check connection
@@ -26,9 +16,10 @@ mysql_select_db($dbname);
 $recallFieldSql="select `key`, value from plugin_settings where model='mkp_recall'";
 $retval = mysql_query( $recallFieldSql, $conn );
 
+$defEncuestas = array();
+
 while($row = mysql_fetch_assoc($retval)){
-       // $_SESSION['def'.$row['key']]=$row['value'];
-		?><script> alert("SI <?php echo 'def'.$row['key']."=". $row['value']; ?>");</script><?php
+       $defEncuestas['def'.$row['key']]=$row['value'];	   
 	}
 
 
@@ -43,6 +34,9 @@ mysql_select_db($dbname)or die ('Error al seleccionar la Base de Datos: '.mysql_
 **y los almacenamos en variables.*/
 $usuario = $_POST["username"];   
 $password = $_POST["password"];
+//$loginkeeping = $_POST("loginkeeping");
+
+
 
 /*Consulta de mysql con la que indicamos que necesitamos que seleccione
 **solo los campos que tenga como nombre_administrador el que el formulario
@@ -62,11 +56,11 @@ $result = mysql_query("SELECT * FROM users WHERE users_name = '$usuario'");
   //Almacenamos el nombre de usuario en una variable de sesión usuario
   $_SESSION['usuario'] = $usuario;  
   
+  foreach($defEncuestas as $defEcuestaKey => $defEcuestaValue){
+		$_SESSION[$defEcuestaKey]=$defEcuestaValue;
+  }
   
-  $_SESSION['def759124']="12,X12X83,X12X84,X12X85";
-$_SESSION['def996661']="15,15X105,15X106,15X107";
-  
-  //Redireccionamos a la pagina: index.php
+ //Redireccionamos a la pagina: index.php
   header("Location: encuestas.php");  
  }
  else
