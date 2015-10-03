@@ -6,11 +6,19 @@ require ("validateSession.php");
 
 $surveyID= htmlspecialchars($_GET["surveyID"]);
 $idOperador=$usuario;
-$numResultaPerPag=15;
-$totalPages =5;
-$totalCalls=1502;
+$numResultaPerPag=25;
 
-$totalPages = ceil($totalCalls / $numResultaPerPag);
+//TOTAL DE ENCUESTAS PARA ESTE OPERADOR (NO OLVIDAR RESETEAR VIA PROCEDURE)
+$conn = mysql_connect($dbhost, $dbuser, $dbpass);
+mysql_select_db($dbname);
+
+$sqlTotalCount ="SELECT count(1) FROM `tokens_".$surveyID."` WHERE `attribute_1` ='".$idOperador."';";
+$nEncuestasTotales = mysql_result(mysql_query( $sqlTotalCount, $conn ),0);
+
+$totalPages = ceil($nEncuestasTotales / $numResultaPerPag);
+
+mysql_close($conn);
+
 
 
 $recallField = $_SESSION["def".$surveyID]; 
@@ -85,14 +93,7 @@ $nEncuestasPendientes = mysql_result(mysql_query( $sqlToProcessCount, $conn ),0)
 mysql_close($conn);
 
 
-//TOTAL DE ENCUESTAS PARA ESTE OPERADOR (NO OLVIDAR RESETEAR VIA PROCEDURE)
-$conn = mysql_connect($dbhost, $dbuser, $dbpass);
-mysql_select_db($dbname);
 
-$sqlTotalCount ="SELECT count(1) FROM `tokens_".$surveyID."` WHERE `attribute_1` ='".$idOperador."';";
-$nEncuestasTotales = mysql_result(mysql_query( $sqlTotalCount, $conn ),0);
-
-mysql_close($conn);
 ?>
 <div class="container">
 	<header>
@@ -110,15 +111,24 @@ echo "<a class='btn btn-info' href='logout.php'>Cerrar Sesión</a>";
 </header>
 
 
-
+<ul class="pagination">
 <?php
 
+foreach(range(1, $totalPages) as $page){
+   
+	 if($page == $_GET['page']){
+        echo '<li class="active"><a href="llamadas.php?surveyID='.$surveyID.'&page=' . $page . '">' . $page . '</a></li>';
+    }else if($page == 1 || $page == $totalPages || ($page >= $_GET['page'] - 2 && $page <= $_GET['page'] + 2)){
+        echo '<li><a href="llamadas.php?surveyID='.$surveyID.'&page=' . $page . '">' . $page . '</a></li>';
+    }
+}
+?>
+</ul>
+<?php
+	if($nEncuestasTotales ==0 )
+	{?>
 
-
-if($nEncuestasTotales ==0 )
-{?>
-
-<p> No posee llamadas asiganadas para esta encuesta.</p>
+		<p> No posee llamadas asiganadas para esta encuesta.</p>
 
 <?php
 } else {
@@ -217,7 +227,6 @@ while($row = mysql_fetch_assoc($retval))
 
 foreach(range(1, $totalPages) as $page){
    
-	
 	 if($page == $_GET['page']){
         echo '<li class="active"><a href="llamadas.php?surveyID='.$surveyID.'&page=' . $page . '">' . $page . '</a></li>';
     }else if($page == 1 || $page == $totalPages || ($page >= $_GET['page'] - 2 && $page <= $_GET['page'] + 2)){
