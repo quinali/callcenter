@@ -38,7 +38,7 @@ $conn->close();
 
 
 //Recargarmos la página de llamadas
-header("Location: llamadas.php?surveyID=".$surveyID."#tok".$tid);  
+header("Location: llamadas.php?surveyID=".$surveyID);  
 
 ?>
 

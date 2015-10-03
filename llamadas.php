@@ -23,8 +23,16 @@ mysql_close($conn);
 
 $recallField = $_SESSION["def".$surveyID]; 
 
+
+
 if(!isset($_GET['page'])){
-    $_GET['page'] = 0;
+
+	if(!isset($_SESSION['page'])){
+			$_GET['page'] = 0;
+	}else{
+			$_GET['page'] = $_SESSION['page'];
+		}		
+
 }else{
     // Convert the page number to an integer
     $_GET['page'] = (int)$_GET['page'];
@@ -39,6 +47,7 @@ if($_GET['page'] < 1){
 }
 $page=$_GET['page'];
 
+$_SESSION['page']=$page; 
 
 
 //Procesamos la variable de session defXXXX para sacar los nombre de la columna que almacena la contestacion de rellamada
