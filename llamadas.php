@@ -143,7 +143,7 @@ $startCall = ($_GET['page'] - 1) * $numResultaPerPag;
 
 $sqlToken=
 "select ".
-"tok.tid,tok.firstname,tok.lastname,tok.token,tok.attribute_9,tok.attribute_2,tok.attribute_3,tok.completed,tok.usesleft as intentos,".
+"tok.tid,tok.firstname,tok.lastname,tok.token,tok.attribute_2,tok.attribute_3,tok.completed,tok.usesleft as intentos,".
 " srv.`".$surveyID.$CONTACT."` as CONTACT,srv.`".$surveyID.$MOTIV."` as MOTIV ".
 ", anws.answer ".
 " from tokens_".$surveyID." tok ".
@@ -174,7 +174,6 @@ if(! $retval )
 			<th>Nombre</th>
 			<th>Teléfono 1</th>
 			<th>Teléfono 2</th>
-			<th>Móvil</th>
 			<th>Emitida</th>
 			<th>Recuperar</th>
 			<th>Intentos</th>
@@ -187,7 +186,6 @@ while($row = mysql_fetch_assoc($retval))
 	{
 	echo "<tr id='tok".$row["tid"]."' >";
 	echo "<td>{$row["firstname"]} {$row["lastname"]}</td>";
-	echo "<td>{$row["attribute_9"]}</td>";
 	echo "<td>{$row["attribute_2"]}</td>";
 	echo "<td>{$row["attribute_3"]}</td>";
 	
