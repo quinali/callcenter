@@ -18,6 +18,9 @@
 	require ('validateAdminSession.php');
 	require ('../config.php');
 
+	$totalOperatorsSevilla= 30;
+	$totalOperatorsMadrid= 50;
+	
 	$surveyID= htmlspecialchars($_GET["idSurvey"]);
 	$conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
 	mysqli_query( $conn,"SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
@@ -68,7 +71,7 @@
 	mysql_close($conn);
 
 	//print($sqlOperadores);
-	//print_r($operadores);
+	print_r($operadores);
 
 ?>
 
@@ -96,14 +99,22 @@
 						<b>No asignados:</b><br/>
 					   <select multiple id='lstBox1' size="10">
 <?php
-							for ($i = 1; $i <= 50; $i++) {
-								echo $i;
-								
-								if(!array_key_exists ('sev'.$i,$operadores)){
-										$valOperador = 'sev'.$i;
-										print("<option value='".$valOperador."'>Sevilla ".$i."</option>");
-								}
+						//Propuesta operadores Sevilla
+							foreach(range(1, $totalOperatorsSevilla) as $idOperador){
+								if(!array_key_exists ('sev'.$idOperador,$operadores)){
+											$valOperador = 'sev'.$idOperador;
+											print("<option value='".$valOperador."'>Sevilla ".$idOperador."</option>");
+									}
 							}
+							
+						//Propuesta operadores Sevilla
+							foreach(range(1, $totalOperatorsMadrid) as $idOperador){
+								if(!array_key_exists ('mad'.$idOperador,$operadores)){
+											$valOperador = 'mad'.$idOperador;
+											print("<option value='".$valOperador."'>Madrid ".$idOperador."</option>");
+									}
+							}
+
 ?>
 						  
 						</select>
@@ -122,20 +133,14 @@
 
 						$fieldValue = array();
 			
-						foreach ($operadores as $operador)
+						foreach ($operadores as $valOperator =>$nameOperador)
 							{
-								$replaceString= array("sev","Sevilla ");
-								$idOperator = str_replace($replaceString,"",$operador);
-								$valOperator = "sev".$idOperator;
-								
-								$fieldValue[$valOperator]='Sevilla '.$idOperator;
-?>
-								<option value='<?php echo $valOperator; ?>'>Sevilla <?php echo $idOperator; ?></option>
-								<script type="text/javascript">$('input#operadoresID').val($('input#operadoresID').val()+'<?php echo $valOperator;?>,');</script>
-<?php								
+								$fieldValue[$valOperator]=$nameOperador;
+								echo "<option value='".$valOperator."'>".$nameOperador."</option>";
+								echo "<script type='text/javascript'>$('input#operadoresID').val($('input#operadoresID').val()+".$valOperator.",');</script>";
 							}
-							
-							$out = array_keys($fieldValue);
+				
+						$out = array_keys($fieldValue);
 							
 ?>
 							
@@ -148,7 +153,7 @@
 		
 		<form action="guardarEncuesta.php" method="post">
 					<input type="hidden" name="surveyID" value="<?php echo "$surveyID"?>"  >
-					<input type="hidden" 	id="operadoresID" name="operadoresID" >
+					<input type="text" 	id="operadoresID" name="operadoresID" >
 					<script type="text/javascript">$('input#operadoresID').val(<?php echo json_encode($out)?>);</script>
 					<input type="submit" value="Guardar">
 		</form>	

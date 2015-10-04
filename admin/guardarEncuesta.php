@@ -57,10 +57,15 @@ $sqlInsert='INSERT INTO survey_operators(idSurvey,idOperator,nameOperator) value
 
 foreach (explode(",",$operadores) as $operador)
 {	
-	$replaceString= array("sev","Sevilla","[","]","'",",");
-	$idOperator = str_replace($replaceString,"",$operador);
-		
-	$sqlInsert .= "(".$surveyID.",'sev".$idOperator."','Sevilla ".$idOperator."'),";
+	if(strpos($operador, 'sev')){
+		$replaceString= array("sev","Sevilla","[","]","'",",");
+		$idOperator = str_replace($replaceString,"",$operador);
+		$sqlInsert .= "(".$surveyID.",'sev".$idOperator."','Sevilla ".$idOperator."'),";
+	}else if(strpos($operador, 'mad')){
+		$replaceString= array("mad","Madrid","[","]","'",",");
+		$idOperator = str_replace($replaceString,"",$operador);
+		$sqlInsert .= "(".$surveyID.",'mad".$idOperator."','Madrid ".$idOperator."'),";
+	}
 }
 
 //Eliminamos la ultima ,
