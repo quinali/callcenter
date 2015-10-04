@@ -54,17 +54,25 @@ if (!$conn) {
 
 $sqlInsert='INSERT INTO survey_operators(idSurvey,idOperator,nameOperator) values ';
 
+//echo $operadores."<br/>";
 
 foreach (explode(",",$operadores) as $operador)
 {	
-	if(strpos($operador, 'sev')){
-		$replaceString= array("sev","Sevilla","[","]","'",",");
-		$idOperator = str_replace($replaceString,"",$operador);
+	//echo "operador=".$operador."-->";
+	$replaceString= array("[","]","'",",");
+	$operador = str_replace($replaceString,"",$operador);
+	//echo "--".$operador."--".substr( $operador, 0, 3)."[".substr( $operador, 3)."]<br/>";
+	
+	if(substr( $operador, 0, 3) ===  'sev'){
+		$idOperator = substr( $operador, 3);
 		$sqlInsert .= "(".$surveyID.",'sev".$idOperator."','Sevilla ".$idOperator."'),";
-	}else if(strpos($operador, 'mad')){
-		$replaceString= array("mad","Madrid","[","]","'",",");
-		$idOperator = str_replace($replaceString,"",$operador);
+		//echo $sqlInsert."<br/>";
+		
+	}else if(substr( $operador, 0, 3) ===  'mad') {
+		$idOperator = substr( $operador, 3);
 		$sqlInsert .= "(".$surveyID.",'mad".$idOperator."','Madrid ".$idOperator."'),";
+		
+		//echo $sqlInsert."<br/>";
 	}
 }
 

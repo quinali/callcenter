@@ -71,7 +71,7 @@
 	mysql_close($conn);
 
 	//print($sqlOperadores);
-	print_r($operadores);
+	//print_r($operadores);
 
 ?>
 
