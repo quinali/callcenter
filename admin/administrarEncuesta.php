@@ -153,7 +153,7 @@
 		
 		<form action="guardarEncuesta.php" method="post">
 					<input type="hidden" name="surveyID" value="<?php echo "$surveyID"?>"  >
-					<input type="text" 	id="operadoresID" name="operadoresID" >
+					<input type="hidden" 	id="operadoresID" name="operadoresID" >
 					<script type="text/javascript">$('input#operadoresID').val(<?php echo json_encode($out)?>);</script>
 					<input type="submit" value="Guardar">
 		</form>	
