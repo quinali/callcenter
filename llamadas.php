@@ -167,10 +167,10 @@ $sqlToken=
 
 
 
-if($idOperador === ('SEV4')){
+/*if($idOperador === ('SEV4')){
 	echo $idOperador."<br/>";
 	echo $sqlToken;
-}
+}*/
 
 $retval = mysql_query( $sqlToken, $conn );
 if(! $retval )
