@@ -58,7 +58,7 @@ $CONTACT=$recallConfig[1];
 $MOTIV=$recallConfig[2];
 $anws_code=$recallConfig[3];
 
-echo	$anws_qid.','.$CONTACT.','.$MOTIV.','.$anws_code;
+//echo	$anws_qid.','.$CONTACT.','.$MOTIV.','.$anws_code;
 ?>	 
 <head>
 	<meta charset="UTF-8" />
@@ -166,7 +166,7 @@ $sqlToken=
 " LIMIT ".$startCall.",".$numResultaPerPag;
 
 
-echo $sqlToken;
+//echo $sqlToken;
 
 $retval = mysql_query( $sqlToken, $conn );
 if(! $retval )
