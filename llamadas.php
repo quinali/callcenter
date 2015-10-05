@@ -166,7 +166,7 @@ $sqlToken=
 " LIMIT ".$startCall.",".$numResultaPerPag;
 
 
-//echo $sqlToken;
+echo $sqlToken;
 
 $retval = mysql_query( $sqlToken, $conn );
 if(! $retval )
