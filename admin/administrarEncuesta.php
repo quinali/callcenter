@@ -18,7 +18,7 @@
 	require ('validateAdminSession.php');
 	require ('../config.php');
 
-	$totalOperatorsSevilla= 30;
+	$totalOperatorsSevilla= 50;
 	$totalOperatorsMadrid= 50;
 	
 	$surveyID= htmlspecialchars($_GET["idSurvey"]);
