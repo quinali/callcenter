@@ -166,7 +166,11 @@ $sqlToken=
 " LIMIT ".$startCall.",".$numResultaPerPag;
 
 
-//echo $sqlToken;
+
+if($idOperador === ('SEV4')){
+	echo $idOperador."<br/>";
+	echo $sqlToken;
+}
 
 $retval = mysql_query( $sqlToken, $conn );
 if(! $retval )
@@ -205,10 +209,10 @@ while($row = mysql_fetch_assoc($retval))
 		echo "<td><span class='glyphicon glyphicon-earphone'></span></td>";
 	
 	//Columna recuperar
-	if ($row["completed"] =="N" and $row["CONTACT"] == "N" and $row["MOTIV"] =="A1"){
+	if ($row["completed"] =="N" and (($row["CONTACT"] == "N" and $row["MOTIV"] =="A1") OR ($row["CONTACT"] == "A2" and $row["MOTIV"] =="A1"))){
 		echo "<td><span class='orange'>{$row["answer"]}</span> </td>";
 		
-	}else if($row["CONTACT"] =="N" and $row["MOTIV"] =="A1"){
+	}else if(($row["CONTACT"] =="N" and $row["MOTIV"] =="A1") OR ($row["CONTACT"] =="A2" and $row["MOTIV"] =="A1")) {
 		echo "<td><a href='./rellamar.php?surveyID={$surveyID}&tid={$row["tid"]}'><span class='red glyphicon glyphicon-repeat'></span><span class='red'>{$row["answer"]}</span></a> </td>";
 	} else {	echo "<td></td>";}
 	
