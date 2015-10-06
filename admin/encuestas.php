@@ -9,6 +9,10 @@
 	<link rel="stylesheet" type="text/css" href="../css/demo.css" />
     <link rel="stylesheet" type="text/css" href="../css/style.css" />
 	<link rel="stylesheet" type="text/css" href="../css/animate-custom.css" />
+		
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<!--link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css"-->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 </head>
 
 <?php
@@ -44,8 +48,8 @@ mysql_close($conn);
 ?>
 	</header>
 
+	<a class='btn btn-info' href='logout.php'>Cerrar Sesión</a>
 	
-	<a class='button' href='logout.php'>Cerrar Sesión</a>
 	
 <?PHP
 
@@ -96,21 +100,36 @@ style="border:3px solid #8AC007;padding: 10px; margin-top: 20px;margin-left:45px
 		
 		$retval2 =  mysql_query( $sqlTotales, $conn2 );
 		
-		$row2 = mysql_fetch_assoc($retval2);
+		//Solo mostramos enlace de entrada si existe la tabla de tokens
+		if( $retval2){
 		
-		$nTotal=$row2['tot'];
-		$nPendientes=$row2['pdtes'];
-		$nOperadoresAsignados=$row2['nOperadoresAsignados'];
-		$nOperadores=$row2['nOperadores'];
+			$row2 = mysql_fetch_assoc($retval2);
+			$nTotal=$row2['tot'];
+			$nPendientes=$row2['pdtes'];
+			$nOperadoresAsignados=$row2['nOperadoresAsignados'];
+			$nOperadores=$row2['nOperadores'];	
+			
+			mysql_close($conn2);
+			
+			echo "<td> {$nTotal} </td>";
+			echo "<td> {$nPendientes} </td>";
+			echo "<td> {$nOperadoresAsignados} </td>";
+			echo "<td> {$nOperadores} </td>";
+			echo "<td><a href='administrarEncuesta.php?idSurvey={$row['sid']}'><img src='../images/Users-Enter-2-icon.png' height='32' width='32'></a></td>";
+		}else{
+			
+			echo "<td>--</td>";
+			echo "<td>--</td>";
+			echo "<td>--</td>";
+			echo "<td>--</td>";
+			echo "<td></td>";
+			
+		}
+		
+		
 		 
 		
-		mysql_close($conn2);
 		
-		echo "<td> {$nTotal} </td>";
-		echo "<td> {$nPendientes} </td>";
-		echo "<td> {$nOperadoresAsignados} </td>";
-		echo "<td> {$nOperadores} </td>";
-		echo "<td><a href='administrarEncuesta.php?idSurvey={$row['sid']}'><img src='../images/Users-Enter-2-icon.png' height='32' width='32'></a></td>";
 		
 		
 }
