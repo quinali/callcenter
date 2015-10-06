@@ -91,6 +91,6 @@ mysqli_query($conn, $sqlInsert);
 
 <script languaje="javascript">
     alert("Operadores asignados.");
-    location.href = "administrarEncuesta.php?idSurvey=<?php echo $surveyID;?>";
+    location.href = "asignarOperadores.php?idSurvey=<?php echo $surveyID;?>";
 </script>
 
