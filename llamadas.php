@@ -8,6 +8,8 @@ $surveyID= htmlspecialchars($_GET["surveyID"]);
 $idOperador=$usuario;
 $numResultaPerPag=25;
 
+$encuestasRellamada = array ( 376647);
+
 //TOTAL DE ENCUESTAS PARA ESTE OPERADOR (NO OLVIDAR RESETEAR VIA PROCEDURE)
 $conn = mysql_connect($dbhost, $dbuser, $dbpass);
 mysql_select_db($dbname);
@@ -152,7 +154,7 @@ $startCall = ($_GET['page'] - 1) * $numResultaPerPag;
 
 $sqlToken=
 "select ".
-"tok.tid,tok.firstname,tok.lastname,tok.token,tok.attribute_2,tok.attribute_3,tok.completed,tok.usesleft as intentos,".
+"tok.tid,tok.firstname,tok.lastname,tok.token,tok.attribute_2,tok.attribute_3,tok.attribute_4,tok.completed,tok.usesleft as intentos,".
 " srv.`".$surveyID.$CONTACT."` as CONTACT,srv.`".$surveyID.$MOTIV."` as MOTIV ".
 ", anws.answer ".
 " from tokens_".$surveyID." tok ".
@@ -185,22 +187,42 @@ if(! $retval )
 	<tbody>
 		<tr>
 			<th>Nombre</th>
-			<th>Teléfono 1</th>
-			<th>Teléfono 2</th>
+			<?php if( !in_array($surveyID,$encuestasRellamada)){ ?>
+			
+				<th>Teléfono 1</th>
+				<th>Teléfono 2</th>
+			
+			<?php } else if(in_array($surveyID,$encuestasRellamada)) {?>
+			
+				<th>Fecha cita</th>
+				<th>Teléfonos</th>
+			
+			<?php } ?>
+			
+			
 			<th>Emitida</th>
 			<th>Recuperar</th>
 			<th>Intentos</th>
 			<th>Encuesta</th>
 		</tr>
 
-<?PHP
+<?php
 
 while($row = mysql_fetch_assoc($retval))
 	{
 	echo "<tr id='tok".$row["tid"]."' >";
 	echo "<td>{$row["firstname"]} {$row["lastname"]}</td>";
-	echo "<td>{$row["attribute_2"]}</td>";
-	echo "<td>{$row["attribute_3"]}</td>";
+	
+	if( !in_array($surveyID,$encuestasRellamada)){
+			
+		echo "<td>{$row["attribute_2"]}</td>";
+		echo "<td>{$row["attribute_3"]}</td>";
+	
+	} else if(in_array($surveyID,$encuestasRellamada)) {
+			
+		echo "<td>{$row["attribute_2"]}</td>";
+		echo "<td>{$row["attribute_3"]} - {$row["attribute_4"]}</td>";	
+	}
 	
 	//Columna emitida
 	if($row["completed"] =="N")
