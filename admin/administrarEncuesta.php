@@ -39,7 +39,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin - Bootstrap Admin Template</title>
+    <title>Administracion Callcenter</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="../css/bootstrap.min.css" rel="stylesheet">
@@ -76,7 +76,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">SB Admin</a>
+                <a class="navbar-brand" href="encuestas.php">SB Admin</a>
             </div>
             <!-- Top Menu Items -->
             <ul class="nav navbar-right top-nav">
@@ -97,13 +97,10 @@
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
                     <li class="active">
-                        <a href="index.html"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
+                        <a href="#"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
                     </li>
                     <li>
                         <a href="asignarOperadores.php?idSurvey=<?php echo $surveyID;?>"><i class="fa fa-fw fa-users"></i> Operadores</a>
-                    </li>
-                    <li>
-                        <a href="tables.html"><i class="fa fa-fw fa-table"></i> Tablas</a>
                     </li>
                 </ul>
             </div>
@@ -118,7 +115,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Dashboard <small>Statistics Overview</small>
+                            Dashboard <small>Statistics Overview:</small> <br/><?php echo $title;?>
                         </h1>
                         <ol class="breadcrumb">
                             <li class="active">
@@ -129,97 +126,135 @@
                 </div>
                 <!-- /.row -->
 
-                <div class="row">
+                 <!-- Zona del mensaje -->
+			<?php if(isset($_SESSION['message'])){ ?>
+				<div class="row">
                     <div class="col-lg-12">
                         <div class="alert alert-info alert-dismissable">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                            <i class="fa fa-info-circle"></i>  <strong>Like SB Admin?</strong> Try out <a href="http://startbootstrap.com/template-overviews/sb-admin-2" class="alert-link">SB Admin 2</a> for additional features!
+                            
+							<?php
+									$message = $_SESSION['message'];
+									unset( $_SESSION['message']);
+							?>
+							<i class="fa fa-info-circle"></i>  <?php echo $message;?>
                         </div>
                     </div>
                 </div>
-                <!-- /.row -->
+				<!-- /.row -->
+			<?php } 
+			
+			//TOTAL DE ENCUESTAS ASIGNADAS Y PENDIENTES PARA ADMINISTRAR
+			$conn2 = mysql_connect($dbhost, $dbuser, $dbpass);
+			mysql_select_db($dbname);
+
+			if(! $conn2 )
+				{
+					die('Could not connect: ' . mysql_error());
+				}
+
+			$sqlTotales =	"select ".
+							" ( select count(1) from tokens_".$surveyID." tok where tok.completed='N' ) as pdtes,".
+							" ( select count(1) from tokens_".$surveyID." tok WHERE 1=1 ) as tot,".
+							" ( select count(1) from (select distinct(attribute_1) from tokens_".$surveyID." tok group by attribute_1) as difOperadores ) as nOperadoresAsignados,".
+							" (select count(1) from survey_operators where idSurvey=".$surveyID.") as nOperadores;";
+			
+			$retval2 =  mysql_query( $sqlTotales, $conn2 );
+			
+			$row2 = mysql_fetch_assoc($retval2);
+			$nTotal=$row2['tot'];
+			$nPendientes=$row2['pdtes'];
+			$nOperadoresAsignados=$row2['nOperadoresAsignados'];
+			$nOperadores=$row2['nOperadores'];	
+			
+			mysql_close($conn2);
+			
+			?>
+                
 
                 <div class="row">
-                    <div class="col-lg-3 col-md-6">
+                    <div class="col-lg-2 col-md-6">
                         <div class="panel panel-primary">
                             <div class="panel-heading">
                                 <div class="row">
                                     <div class="col-xs-3">
-                                        <i class="fa fa-comments fa-5x"></i>
+                                        <i class="fa fa-phone fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                        <div class="huge">26</div>
-                                        <div>New Comments!</div>
+                                        <div class="huge"><?php echo $nTotal;?></div>
+                                        <div>Total llamadas</div>
                                     </div>
                                 </div>
                             </div>
-                            <a href="#">
-                                <div class="panel-footer">
-                                    <span class="pull-left">View Details</span>
-                                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                    <div class="clearfix"></div>
-                                </div>
-                            </a>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-md-6">
+                    <div class="col-lg-2 col-md-6">
                         <div class="panel panel-green">
                             <div class="panel-heading">
                                 <div class="row">
                                     <div class="col-xs-3">
-                                        <i class="fa fa-tasks fa-5x"></i>
+                                        <i class="fa fa-times fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                        <div class="huge">12</div>
-                                        <div>New Tasks!</div>
+                                        <div class="huge"><?php echo $nPendientes;?></div>
+                                        <div>Llamadas pendientes</div>
                                     </div>
                                 </div>
                             </div>
-                            <a href="#">
-                                <div class="panel-footer">
-                                    <span class="pull-left">View Details</span>
-                                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                    <div class="clearfix"></div>
-                                </div>
-                            </a>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-md-6">
-                        <div class="panel panel-yellow">
-                            <div class="panel-heading">
-                                <div class="row">
-                                    <div class="col-xs-3">
-                                        <i class="fa fa-shopping-cart fa-5x"></i>
-                                    </div>
-                                    <div class="col-xs-9 text-right">
-                                        <div class="huge">124</div>
-                                        <div>New Orders!</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <a href="#">
-                                <div class="panel-footer">
-                                    <span class="pull-left">View Details</span>
-                                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                    <div class="clearfix"></div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
+                    <div class="col-lg-2 col-md-6">
                         <div class="panel panel-red">
                             <div class="panel-heading">
                                 <div class="row">
                                     <div class="col-xs-3">
-                                        <i class="fa fa-support fa-5x"></i>
+                                        <i class="fa fa-refresh fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                        <div class="huge">13</div>
-                                        <div>Support Tickets!</div>
+                                        <div class="huge"><?php echo $nTotal;?></div>
+                                        <div>Rellamadas</div>
                                     </div>
                                 </div>
                             </div>
-                            <a href="#">
+                        </div>
+                    </div>
+					
+					
+					<div class="col-lg-2 col-md-6">
+                        
+                    </div>
+					
+					<div class="col-lg-2 col-md-6">
+                        <div class="panel panel-yellow">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <i class="fa fa-users fa-5x"></i>
+                                    </div>
+                                    <div class="col-xs-9 text-right">
+                                        <div class="huge"><?php echo $nOperadoresAsignados;?></div>
+                                        <div>Con llamadas</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+					
+					<div class="row">
+                    <div class="col-lg-2 col-md-6">
+                        <div class="panel panel-red">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <i class="fa fa-users fa-5x"></i>
+                                    </div>
+                                    <div class="col-xs-9 text-right">
+                                        <div class="huge"><?php echo $nOperadores;?></div>
+                                        <div>Totales</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="asignarOperadores.php?idSurvey=<?php echo $surveyID;?>">
                                 <div class="panel-footer">
                                     <span class="pull-left">View Details</span>
                                     <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -228,6 +263,7 @@
                             </a>
                         </div>
                     </div>
+					
                 </div>
                 <!-- /.row -->
 

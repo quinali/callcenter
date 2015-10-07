@@ -56,14 +56,13 @@
 ?>
 
 <head>
-
-    <meta charset="utf-8">
+	<meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin - Bootstrap Admin Template</title>
+    <title>Administracion Callcenter</title>
 
 	<script src="../js/jquery.js"></script>
 	
@@ -89,7 +88,6 @@
 </head>
 
 <body>
-
     <div id="wrapper">
 
         <!-- Navigation -->
@@ -102,7 +100,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">SB Admin</a>
+                <a class="navbar-brand" href="encuestas.php">SB Admin</a>
             </div>
             <!-- Top Menu Items -->
             <ul class="nav navbar-right top-nav">
@@ -126,10 +124,7 @@
                         <a href="administrarEncuesta.php?idSurvey=<?php echo $surveyID; ?>"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
                     </li>
                     <li class="active">
-                        <a href="asignarOperadores.php?idSurvey=<?php echo $surveyID;?>"><i class="fa fa-fw fa-users"></i> Operadores</a>
-                    </li>
-                    <li>
-                        <a href="tables.html"><i class="fa fa-fw fa-table"></i> Tablas</a>
+                        <a href="#"><i class="fa fa-fw fa-users"></i> Operadores</a>
                     </li>
                 </ul>
             </div>
@@ -144,12 +139,13 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            <small>Asignaci&oacute;n de operadores: </small><?php echo $title;?>
+                            Asignaci&oacute;n <small>de operadores:</small> 
+							<br/><?php echo $title;?>
                         </h1>
                         <ol class="breadcrumb">
                             <li>
-                                <i class="fa fa-dashboard"></i>  <a href="index.html">Dashboard</a>
-                            </li>
+                                <i class="fa fa-dashboard"></i><a href='administrarEncuesta.php?idSurvey=<?php echo "$surveyID"?>'>Dashboard</a>
+						    </li>
                             <li class="active">
                                 <i class="fa fa-users"></i> Operadores
                             </li>
@@ -158,8 +154,27 @@
                 </div>
                 <!-- /.row -->
              
+			 <!-- Zona del mensaje -->
+			<?php if(isset($_SESSION['message'])){ ?>
+				<div class="row">
+                    <div class="col-lg-12">
+                        <div class="alert alert-info alert-dismissable">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            
+							<?php
+									$message = $_SESSION['message'];
+									unset( $_SESSION['message']);
+							?>
+							<i class="fa fa-info-circle"></i>  <?php echo $message;?>
+                        </div>
+                    </div>
+                </div>
+				<!-- /.row -->
+			<?php } ?>
+			
+			
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-6 col-md-6">
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <h3 class="panel-title"><i class="fa fa-users fa-fw"></i> Asignaci&oacute;n de operadores</h3>
@@ -167,8 +182,8 @@
                             <div class="panel-body">
 							
 									<div class="row">
-										<div class="col-lg-3 text-center">
-											<div class="panel panel-default">
+										<div class="col-lg-3 col-md-6 text-center">
+											<div class="panel panel-default  clear">
 												<div class="panel-body">
 													<b>No asignados:</b><br/>
 														<select multiple id='lstBox1' size="10">
@@ -192,25 +207,20 @@
 												</div>
 											</div>
 										</div>
-										<div class="col-lg-3 text-center">
-											<div class="panel panel-default">
+										<div class="col-lg-3 col-md-6 text-center" style="vertical-align:middle;">
+											<div class="panel panel-default clear">
 												<div class="panel-body">
-												<br/>
+												<br/><br/><br/><br/>
 													<input type='button' id='btnLeft' value ='  <  '/>
 													<input type='button' id='btnRight' value ='  >  '/>
 											
 													<br/><br/>
-													<form action="guardarEncuesta.php" method="post">
-									<input type="hidden" 	name="surveyID" value="<?php echo "$surveyID"?>"  >
-									<input type="hidden" 	id="operadoresID" name="operadoresID" >
-									<script type="text/javascript">$('input#operadoresID').val(<?php echo json_encode($out)?>);</script>
-									<input type="submit" class="btn btn-info" value="Guardar">
-								</form>	
+													
 												</div>
 											</div>
 										</div>
-										<div class="col-lg-3 text-center">
-											<div class="panel panel-default">
+										<div class="col-lg-3 col-md-6 text-center">
+											<div class="panel panel-default clear">
 												<div class="panel-body">
 													<b>Asignados: </b><br/>
 								<select multiple id='lstBox2' name="lstBox2[]" size="10">
@@ -220,7 +230,6 @@
 										{
 											$fieldValue[$valOperator]=$nameOperador;
 											echo "<option value='".$valOperator."'>".$nameOperador."</option>";
-											echo "<script type='text/javascript'>$('input#operadoresID').val($('input#operadoresID').val()+".$valOperator.",');</script>";
 										}
 									
 									$out = array_keys($fieldValue);
@@ -232,21 +241,35 @@
 										
 									</div>
 									<!-- /.row -->
-							
-					
-								
-								
-								<div> 
-									<a class='btn btn-info' href='reasignaEncuestas.php?surveyID=<?php echo "$surveyID"?>'>Asignar Llamadas</a>	
-								</div>
-								
 								
 							</div>
+							
+							 <div class="panel-footer text-right">
+                                <form action="guardarEncuesta.php" method="post">
+									<input type="hidden" 	name="surveyID" value="<?php echo "$surveyID"?>"  >
+									<input type="hidden" 	id="operadoresID" name="operadoresID" >
+									<script type="text/javascript">$('input#operadoresID').val(<?php echo json_encode($out)?>);</script>
+									<input type="submit" class="btn btn-info" value="Guardar">
+								</form>	
+                            </div>
                         </div>
                     </div>
                 </div>
                 <!-- /.row -->
 
+				<div class="row">
+					<div class="col-lg-12 text-left">
+						<div class="panel panel-default">
+							<div class="panel-body">
+								<div> 
+									<a class='btn btn-info' href='reasignaEncuestas.php?surveyID=<?php echo "$surveyID"?>'>Asignar Llamadas</a>	
+								</div>
+							</div>
+						</div>	
+					</div>
+				</div>
+				<!-- /.row -->
+				
             </div>
             <!-- /.container-fluid -->
         </div>

@@ -11,14 +11,12 @@ require ('../config.php');
 
 $surveyID= $_POST["surveyID"];
 
+
 if (empty($_POST["operadoresID"])) 
 {
-?>	
-	<script languaje="javascript">
-		alert("No hay nada que asignar.");
-		location.href = "administrarEncuesta.php?idSurvey=<?php echo $surveyID;?>";
-	</script>
-<?php
+	$_SESSION['message'] = " No hay nada que asignar."; 
+	 header("location: asignarOperadores.php?idSurvey=".$surveyID);
+
 }else{
 	$operadores = $_POST["operadoresID"];
 }
@@ -55,42 +53,37 @@ if (!$conn) {
 $sqlInsert='INSERT INTO survey_operators(idSurvey,idOperator,nameOperator) values ';
 
 //echo $operadores."<br/>";
-
-foreach (explode(",",$operadores) as $operador)
-{	
-	//echo "operador=".$operador."-->";
-	$replaceString= array("[","]","'",",");
-	$operador = str_replace($replaceString,"",$operador);
-	//echo "--".$operador."--".substr( $operador, 0, 3)."[".substr( $operador, 3)."]<br/>";
-	
-	if(substr( $operador, 0, 3) ===  'sev'){
-		$idOperator = substr( $operador, 3);
-		$sqlInsert .= "(".$surveyID.",'sev".$idOperator."','Sevilla ".$idOperator."'),";
-		//echo $sqlInsert."<br/>";
+if(isset($operadores)){
+	foreach (explode(",",$operadores) as $operador)
+	{	
+		//echo "operador=".$operador."-->";
+		$replaceString= array("[","]","'",",");
+		$operador = str_replace($replaceString,"",$operador);
+		//echo "--".$operador."--".substr( $operador, 0, 3)."[".substr( $operador, 3)."]<br/>";
 		
-	}else if(substr( $operador, 0, 3) ===  'mad') {
-		$idOperator = substr( $operador, 3);
-		$sqlInsert .= "(".$surveyID.",'mad".$idOperator."','Madrid ".$idOperator."'),";
-		
-		//echo $sqlInsert."<br/>";
+		if(substr( $operador, 0, 3) ===  'sev'){
+			$idOperator = substr( $operador, 3);
+			$sqlInsert .= "(".$surveyID.",'sev".$idOperator."','Sevilla ".$idOperator."'),";
+			//echo $sqlInsert."<br/>";
+			
+		}else if(substr( $operador, 0, 3) ===  'mad') {
+			$idOperator = substr( $operador, 3);
+			$sqlInsert .= "(".$surveyID.",'mad".$idOperator."','Madrid ".$idOperator."'),";
+			
+			//echo $sqlInsert."<br/>";
+		}
 	}
+
+	//Eliminamos la ultima ,
+	$sqlInsert = rtrim($sqlInsert, ",");
+
+	//print($sqlInsert);
+	//print("<br/>");
+	mysqli_query($conn, $sqlInsert);
+	
+	$_SESSION['message'] = " Operadores correctamente asignados."; 
+	 header("location: asignarOperadores.php?idSurvey=".$surveyID);
 }
 
-//Eliminamos la ultima ,
-$sqlInsert = rtrim($sqlInsert, ",");
-
-//print($sqlInsert);
-//print("<br/>");
-mysqli_query($conn, $sqlInsert);
-
 ?>
-
-
-
-
-
-<script languaje="javascript">
-    alert("Operadores asignados.");
-    location.href = "asignarOperadores.php?idSurvey=<?php echo $surveyID;?>";
-</script>
 
