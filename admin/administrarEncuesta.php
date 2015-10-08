@@ -1,18 +1,5 @@
-<head>
-	<meta charset="UTF-8" />
-	<!-- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">  -->
-	<title>Listado de encuestas</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-	<meta name="author" content="JNL" />
-	<link rel="shortcut icon" href="../favicon.ico"> 
-	<link rel="stylesheet" type="text/css" href="../css/added.css" />
-	<link rel="stylesheet" type="text/css" href="../css/demo.css" />
-    <link rel="stylesheet" type="text/css" href="../css/style.css" />
-	<link rel="stylesheet" type="text/css" href="../css/animate-custom.css" />
-
-	<script src="../js/jquery-1.11.3.min.js" type="text/javascript"></script>
-	
-	</head>
+<!DOCTYPE html>
+<html lang="en">
 
 <?php
 	require ('validateAdminSession.php');
@@ -41,182 +28,340 @@
 	
 	
 	mysqli_close($conn);
-	
-	
-	
-	
-	$conn = mysql_connect($dbhost, $dbuser, $dbpass);
-
-	if(! $conn )
-	{
-	  die('Could not connect: ' . mysql_error());
-	}
-
-
-	mysql_select_db($dbname);
-
-	$sqlOperadores ="SELECT * FROM survey_operators WHERE idSurvey=".$surveyID;
-
-	$retval =  mysql_query( $sqlOperadores, $conn );
-
-	$operadores = array();
-
-	//Sacamos los operadores asignados a este encuesta
-	while($row = mysql_fetch_assoc($retval))
-		{
-		
-			$operadores [$row['idOperator']] = $row['nameOperator'];
-		
-		}
-	mysql_close($conn);
-
-	//print($sqlOperadores);
-	//print_r($operadores);
-
 ?>
 
 
-	<div class="container">
-		<header>
-			<h1>Administracion de <span>Encuestas Activas</span></h1>
-<?php		
-			echo "<h1>Encuesta: <span>$title</span></h1>" 
-?>
-			<a class='button' href='logout.php'>Cerrar Sesion</a>
-			<a class='button' href='encuestas.php'>Go Back</a>
-		</header>
-		
-		
-	<div style="height:50%; background-color: #CCFF99"> 
-		ASIGNAR OPERADORES
-	<br/>
+<head>
 
-	<div align="center">
-		<table style='width:370px;'>
-			<tr>
-				<td style='width:160px;vertical-align:bottom;'">
-					<div align="right">
-						<b>No asignados:</b><br/>
-					   <select multiple id='lstBox1' size="10">
-<?php
-						//Propuesta operadores Sevilla
-							foreach(range(1, $totalOperatorsSevilla) as $idOperador){
-								if(!array_key_exists ('sev'.$idOperador,$operadores)){
-											$valOperador = 'sev'.$idOperador;
-											print("<option value='".$valOperador."'>Sevilla ".$idOperador."</option>");
-									}
-							}
-							
-						//Propuesta operadores Sevilla
-							foreach(range(1, $totalOperatorsMadrid) as $idOperador){
-								if(!array_key_exists ('mad'.$idOperador,$operadores)){
-											$valOperador = 'mad'.$idOperador;
-											print("<option value='".$valOperador."'>Madrid ".$idOperador."</option>");
-									}
-							}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-?>
-						  
-						</select>
-					</div>
-				</td>
-				<td style='width:50px;text-align:center;vertical-align:middle;'>
-					<input type='button' id='btnRight' value ='  >  '/>
-					<br/><input type='button' id='btnLeft' value ='  <  '/>
-				</td>
-				<td style='width:160px;'>
-				
+    <title>Administracion Callcenter</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="../css/sb-admin.css" rel="stylesheet">
+	
+    <!-- Morris Charts CSS -->
+    <link href="../css/plugins/morris.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="../font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+	<!-- jQuery -->
+    <script src="../js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../js/bootstrap.min.js"></script>
+
+    <!-- Morris Charts JavaScript -->
+    <script src="../js/plugins/morris/raphael.min.js"></script>
+    <script src="../js/plugins/morris/morris.js"></script>
+    <script src="../js/plugins/morris/morris-data.js"></script>
+	
+	
+	
+	<!--script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script-->
+	<!--script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.2/raphael-min.js"></script-->
+	<!--script src="../morris.js"></script-->
+	<!--script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/r224/prettify.min.js"></script-->
+	<!--script src="lib/example.js"></script-->
+	<!--link rel="stylesheet" href="lib/example.css"-->
+	<!--link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/prettify/r224/prettify.min.css"-->
+	<!--link rel="stylesheet" href="../morris.css"-->
+	
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="encuestas.php">SB Admin</a>
+            </div>
+            <!-- Top Menu Items -->
+            <ul class="nav navbar-right top-nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <?php echo $usuario;?> <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="encuestas.php"><i class="fa fa-fw fa-gear"></i> Volver</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="logout.php"><i class="fa fa-fw fa-power-off"></i> Salir</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav side-nav">
+                    <li class="active">
+                        <a href="#"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
+                    </li>
+                    <li>
+                        <a href="asignarOperadores.php?idSurvey=<?php echo $surveyID;?>"><i class="fa fa-fw fa-users"></i> Operadores</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </nav>
+
+        <div id="page-wrapper">
+
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">
+                            Dashboard <small>Statistics Overview:</small> <br/><?php echo $title;?>
+                        </h1>
+                        <ol class="breadcrumb">
+                            <li class="active">
+                                <i class="fa fa-dashboard"></i> Dashboard
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+                <!-- /.row -->
+
+                 <!-- Zona del mensaje -->
+			<?php if(isset($_SESSION['message'])){ ?>
+				<div class="row">
+                    <div class="col-lg-12">
+                        <div class="alert alert-info alert-dismissable">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            
+							<?php
+									$message = $_SESSION['message'];
+									unset( $_SESSION['message']);
+							?>
+							<i class="fa fa-info-circle"></i>  <?php echo $message;?>
+                        </div>
+                    </div>
+                </div>
+				<!-- /.row -->
+			<?php } 
+			
+			//TOTAL DE ENCUESTAS ASIGNADAS Y PENDIENTES PARA ADMINISTRAR
+			$conn2 = mysql_connect($dbhost, $dbuser, $dbpass);
+			mysql_select_db($dbname);
+
+			if(! $conn2 )
+				{
+					die('Could not connect: ' . mysql_error());
+				}
+
+			$sqlTotales =	"select ".
+							" ( select count(1) from tokens_".$surveyID." tok where tok.completed='N' ) as pdtes,".
+							" ( select count(1) from tokens_".$surveyID." tok where tok.completed<>'N' ) as emitidas,".
+							" ( select count(1) from tokens_".$surveyID." tok WHERE 1=1 ) as tot,".
+							" ( select count(1) from (select distinct(attribute_1) from tokens_".$surveyID." tok group by attribute_1) as difOperadores ) as nOperadoresAsignados,".
+							" (select count(1) from survey_operators where idSurvey=".$surveyID.") as nOperadores;";
+			
+			$retval2 =  mysql_query( $sqlTotales, $conn2 );
+			
+			$row2 = mysql_fetch_assoc($retval2);
+			$nTotal=$row2['tot'];
+			$nPendientes=$row2['pdtes'];
+			$nEmitidas=$row2['emitidas'];
+			$nOperadoresAsignados=$row2['nOperadoresAsignados'];
+			$nOperadores=$row2['nOperadores'];	
+			
+			mysql_close($conn2);
+			
+			?>
+                
+
+            <div class="row">
+				<div class="col-lg-12 col-md-6">	
+                    <div class="col-lg-2 col-md-6">
+                        <div class="panel panel-green">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <i class="fa fa-phone fa-5x"></i>
+                                    </div>
+                                    <div class="col-xs-9 text-right">
+                                        <div class="huge"><?php echo $nPendientes;?></div>
+                                        <div>Pendientes</div>
+                                    </div>
+                                </div>
+                            </div>
+							<div class="panel-body">
+								<div> 
+									<a class='btn btn-info' href='reasignaEncuestas.php?surveyID=<?php echo "$surveyID"?>'><span class="glyphicon glyphicon-refresh"></span> Asignar Llamadas</a>	
+								</div>
+							</div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-6">
+                        <div class="panel panel-yellow">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <i class="fa fa-phone fa-5x"></i>
+                                    </div>
+                                    <div class="col-xs-9 text-right">
+                                        <div class="huge"><?php echo $nEmitidas;?></div>
+                                        <div>Emitidas</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-6">
+                        <div class="panel panel-red">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <i class="fa fa-phone fa-5x"></i>
+                                    </div>
+                                    <div class="col-xs-9 text-right">
+                                        <div class="huge"><?php echo $nTotal;?></div>
+                                        <div>Total</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 					
-					<b>Asignados: </b><br/>
-					<select multiple id='lstBox2' name="lstBox2[]" size="10">
+					
+					<div class="col-lg-2 col-md-6">
+                        
+                    </div>
+					
+					<div class="col-lg-2 col-md-6">
+                        <div class="panel panel-yellow">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <i class="fa fa-users fa-5x"></i>
+                                    </div>
+                                    <div class="col-xs-9 text-right">
+                                        <div class="huge"><?php echo $nOperadoresAsignados;?></div>
+                                        <div>Con llamadas</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+					
+					
+                    <div class="col-lg-2 col-md-6">
+                        <div class="panel panel-red">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <i class="fa fa-users fa-5x"></i>
+                                    </div>
+                                    <div class="col-xs-9 text-right">
+                                        <div class="huge"><?php echo $nOperadores;?></div>
+                                        <div>Totales</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="asignarOperadores.php?idSurvey=<?php echo $surveyID;?>">
+                                <div class="panel-footer">
+                                    <span class="pull-left">View Details</span>
+                                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+				</div>
+            </div>
+            <!-- /.row -->
+
+           <div class="row">
+                    <div class="col-lg-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-bar-chart-o fa-fw"></i> Llamadas por operador</h3>
+                            </div>
+                            <div class="panel-body">
+							
+<?php
+$conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
+
+
+
+$sqlOperadores ="select operador, ".
+"(select count(1) from tokens_".$surveyID." tk2 where tk2.attribute_1=tok1.operador and completed='N') as ptes, ".
+"(select count(1) from tokens_".$surveyID." tk3 where tk3.attribute_1=tok1.operador and completed<>'N') as ejecutadas ".
+"from ".
+"(select distinct(attribute_1) as operador from tokens_".$surveyID."  group by attribute_1) as tok1 ";
+
+?>
+
+                                 <div id="graph"></div>
+								 <script>
+									Morris.Bar({
+									  element: 'graph',
+									  data: [
 <?php
 
-						$fieldValue = array();
-			
-						foreach ($operadores as $valOperator =>$nameOperador)
-							{
-								$fieldValue[$valOperator]=$nameOperador;
-								echo "<option value='".$valOperator."'>".$nameOperador."</option>";
-								echo "<script type='text/javascript'>$('input#operadoresID').val($('input#operadoresID').val()+".$valOperator.",');</script>";
-							}
-				
-						$out = array_keys($fieldValue);
+$result = mysqli_query($conn, $sqlOperadores);
+
+if (mysqli_num_rows($result) > 0) {
+    // output data of each row
+    while($row = mysqli_fetch_assoc($result)) {
+		echo "{x: '{$row["operador"]}', y: {$row["ptes"]},  a: {$row["ejecutadas"]}},";
+    }
+} 
+
+?>							
 							
-?>
-							
-								
-					</select>
-				</td>
-			</tr>
-		</table>
-		<br/>
-		
-		<form action="guardarEncuesta.php" method="post">
-					<input type="hidden" name="surveyID" value="<?php echo "$surveyID"?>"  >
-					<input type="hidden" 	id="operadoresID" name="operadoresID" >
-					<script type="text/javascript">$('input#operadoresID').val(<?php echo json_encode($out)?>);</script>
-					<input type="submit" value="Guardar">
-		</form>	
-	</div>
- 	
-	<br/>
-	
-	<div style="height:25%; background-color: #CCFF99"> 
-		<div>ASIGNAR LLAMADAS</div>
-		<br/>
-		<a class='button' href='reasignaEncuestas.php?surveyID=<?php echo "$surveyID"?>'>Asignar Llamadas</a>	
-				
+                                   ],
+									  xkey: 'x',
+									  ykeys: ['y', 'a'],
+									  labels: ['Ptes', 'Hechas'],
+									  stacked: true,
+									  barColors: ["#5CB85C", "#F0AD4E"],
+									});
+								 </script>
+								 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.row -->
 
+            </div>
+            <!-- /.container-fluid -->
 
-	
-	</div>
-	
-	<script type="text/javascript">
-	
-	function hideFieldRecharge(){
-				
-				fieldContent="[";
-				$("#lstBox2 > option").each(function() {
-					fieldContent+="'"+this.value+"',";
-			});
-			
-			fieldContent+=']';
-			fieldContent=fieldContent.replace(",]","]");
+        </div>
+        <!-- /#page-wrapper -->
 
-			$('input#operadoresID').val(fieldContent);
-				
-				
-	}
-	
-    $(document).ready(function() {
-    $('#btnRight').click(function(e) {
-        var selectedOpts = $('#lstBox1 option:selected');
-        if (selectedOpts.length == 0) {
-            //alert("Nothing to move.");
-            e.preventDefault();
-        }
+    </div>
+    <!-- /#wrapper -->
 
-        $('#lstBox2').append($(selectedOpts).clone());
-        $(selectedOpts).remove();
-        e.preventDefault();
-		hideFieldRecharge();
-    });
+  
 
-    $('#btnLeft').click(function(e) {
-        var selectedOpts = $('#lstBox2 option:selected');
-        if (selectedOpts.length == 0) {
-            //alert("Nothing to move.");
-            e.preventDefault();
-        }
+</body>
 
-        $('#lstBox1').append($(selectedOpts).clone());
-        $(selectedOpts).remove();
-        e.preventDefault();
-		hideFieldRecharge();
-    });
-});
-</script>
-	
-	
-
-
+</html>

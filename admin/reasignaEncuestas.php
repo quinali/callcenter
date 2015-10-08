@@ -114,23 +114,26 @@ $conn2 = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname);
 	} else {
 		
 		echo "Error updating record: " . mysqli_error($conn2);
+		
+		$message="Error en la asignación de llamadas  ".mysqli_error($conn2);
+		$_SESSION['message'] = $message;  
 ?>
 		<script languaje="javascript">
-			alert("Error en la asignación de llamadas  <?php echo  mysqli_error($conn2); ?>");
 			location.href = "encuestas.php";
 		</script>;
     
 <?php
 	 }
+	 
+	$message=" Reasignación de tareas correctamente realizada.";
+	$_SESSION['message'] = $message; 
 	mysqli_close($conn2);
 }
 
-?>
 
-<script languaje="javascript">
-			alert("Reasignacion de tareas realizada.");
-			location.href = "encuestas.php";
-		</script>;
+ header("location: administrarEncuesta.php?idSurvey=".$surveyID);
+
+?>
 
 
 

@@ -6,52 +6,44 @@
 <!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
     <head>
         <meta charset="UTF-8" />
-        <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">  -->
-        <title>Acceso al Call Center</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-        <meta name="description" content="Login and Registration Form for CallCenter" />
+        
+		<meta name="description" content="Login and Registration Form for CallCenter" />
         <meta name="author" content="JNL" />
-        <link rel="shortcut icon" href="../favicon.ico"> 
-        <link rel="stylesheet" type="text/css" href="css/demo.css" />
-        <link rel="stylesheet" type="text/css" href="css/style.css" />
-		<link rel="stylesheet" type="text/css" href="css/animate-custom.css" />
-    </head>
-    <body>
-        <div class="container">
-            <header>
-                <h1>Acceso al <span>Registro de Encuestas</span></h1>
-			</header>
-            <section>				
-                <div id="container_demo" >
-                    <!-- hidden anchor to stop jump http://www.css3create.com/Astuce-Empecher-le-scroll-avec-l-utilisation-de-target#wrap4  -->
-                    <a class="hiddenanchor" id="toregister"></a>
-                    <a class="hiddenanchor" id="tologin"></a>
-                    <div id="wrapper">
-                        <div id="login" >
-                            <form  action="login.php" autocomplete="on" method="post"> 
-                                <h1>Identifique el puesto</h1> 
-                                <p> 
-                                    <label for="puesto" class="uname" data-icon="u" > Numero de puesto </label>
-                                    <input id="username" name="username" required="required" type="text" placeholder="n&uacute;mero del puesto"/>
-                                </p>
-                                <p> 
-                                    <label for="password" class="youpasswd" data-icon="p"> Your password </label>
-                                    <input id="password" name="password" required="required" type="password" placeholder="eg. X8df!90EO" /> 
-                                </p>
-                                <!--p class="keeplogin"> 
-									<input type="checkbox" name="loginkeeping" id="loginkeeping" value="loginkeeping" /> 
-									<label for="loginkeeping">Mantener sesi&oacute;n</label>
-								</p-->
-                                <p class="login button"> 
-                                    <input type="submit" value="Login" /> 
-								</p>
-                            </form>
-                        </div>
+        <link rel="shortcut icon" href="images/favicon.png"> 
+		<link rel="icon" href="images/favicon.png"> 
+        
+		<title>Call Center</title>
+		
+	<!-- Bootstrap core CSS -->
+		<link href="css/bootstrap.min.css" rel="stylesheet">
 
-						
-                    </div>
-                </div>  
-            </section>
-        </div>
-    </body>
+		<!-- Custom styles for this template -->
+		<link href="css/signin.css" rel="stylesheet">
+
+		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+		<!--[if lt IE 9]>
+		  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<![endif]-->
+    </head>
+	
+	<body>
+
+    <div class="container">
+
+      <form class="form-signin" action="login.php" method="post">
+        <h2 class="form-signin-heading">Identifique el puesto</h2>
+        <label for="puesto" class="sr-only">Numero de puesto</label>
+        <input type="text" name="username" id="username" class="form-control" placeholder="N&uacute;mero del puesto" required autofocus>
+        <label for="password" class="sr-only">Password</label>
+        <input type="password" id="password" name="password" class="form-control" placeholder="Introduzca su clave" required>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+      </form>
+
+    </div> <!-- /container -->
+
+  </body>
+	
 </html>
