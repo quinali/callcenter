@@ -125,16 +125,15 @@ $conn2 = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname);
 <?php
 	 }
 	 
-	$message=" Reasignacion de tareas correctamente realizada.";
+	$message=" Reasignación de tareas correctamente realizada.";
 	$_SESSION['message'] = $message; 
 	mysqli_close($conn2);
 }
 
-?>
 
-<script languaje="javascript">
-		location.href = "encuestas.php";
-</script>;
+ header("location: administrarEncuesta.php?idSurvey=".$surveyID);
+
+?>
 
 
 

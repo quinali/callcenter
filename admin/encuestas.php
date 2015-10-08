@@ -197,7 +197,7 @@
 																	echo "<td> {$nPendientes} </td>";
 																	echo "<td> {$nOperadoresAsignados} </td>";
 																	echo "<td> {$nOperadores} </td>";
-																	echo "<td><a href='administrarEncuesta.php?idSurvey={$row['sid']}'><img src='../images/Users-Enter-2-icon.png' height='32' width='32'></a></td>";
+																	echo "<td><a href='administrarEncuesta.php?idSurvey={$row['sid']}'><i class='fa fa-sign-in fa-2x'></i></a></td>";
 																}else{
 																	
 																	echo "<td>--</td>";

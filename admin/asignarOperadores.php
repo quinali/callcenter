@@ -52,6 +52,29 @@
 
 	//print($sqlOperadores);
 	//print_r($operadores);
+	
+	 
+	
+	//TOTAL DE ENCUESTAS ASIGNADAS Y PENDIENTES PARA ADMINISTRAR
+	$conn = mysql_connect($dbhost, $dbuser, $dbpass);
+	mysql_select_db($dbname);
+
+	if(! $conn )
+		{
+			die('Could not connect: ' . mysql_error());
+		}
+
+	$sqlTotales =	"select ".
+					" ( select count(1) from (select distinct(attribute_1) from tokens_".$surveyID." tok group by attribute_1) as difOperadores ) as nOperadoresAsignados,".
+					" (select count(1) from survey_operators where idSurvey=".$surveyID.") as nOperadores;";
+	
+	$retval2 =  mysql_query( $sqlTotales, $conn );
+	
+	$row2 = mysql_fetch_assoc($retval2);
+	$nOperadoresAsignados=$row2['nOperadoresAsignados'];
+	$nOperadores=$row2['nOperadores'];	
+	
+	mysql_close($conn);
 
 ?>
 
@@ -137,7 +160,7 @@
 
                 <!-- Page Heading -->
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-lg-8">
                         <h1 class="page-header">
                             Asignaci&oacute;n <small>de operadores:</small> 
 							<br/><?php echo $title;?>
@@ -151,6 +174,38 @@
                             </li>
                         </ol>
                     </div>
+					
+					<div class="col-lg-2 col-md-6">
+                        <div class="panel panel-yellow">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <i class="fa fa-users fa-5x"></i>
+                                    </div>
+                                    <div class="col-xs-9 text-right">
+                                        <div class="huge"><?php echo $nOperadoresAsignados;?></div>
+                                        <div>Opers. con llamadas</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+					<div class="col-lg-2 col-md-6">
+                        <div class="panel panel-red">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <i class="fa fa-users fa-5x"></i>
+                                    </div>
+                                    <div class="col-xs-9 text-right">
+                                        <div class="huge"><?php echo $nOperadores;?></div>
+                                        <div>Opers. actuales</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+					
                 </div>
                 <!-- /.row -->
              
@@ -257,18 +312,6 @@
                 </div>
                 <!-- /.row -->
 
-				<div class="row">
-					<div class="col-lg-12 text-left">
-						<div class="panel panel-default">
-							<div class="panel-body">
-								<div> 
-									<a class='btn btn-info' href='reasignaEncuestas.php?surveyID=<?php echo "$surveyID"?>'>Asignar Llamadas</a>	
-								</div>
-							</div>
-						</div>	
-					</div>
-				</div>
-				<!-- /.row -->
 				
             </div>
             <!-- /.container-fluid -->
