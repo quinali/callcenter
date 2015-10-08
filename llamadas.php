@@ -8,6 +8,9 @@ $surveyID= htmlspecialchars($_GET["surveyID"]);
 $idOperador=$usuario;
 $numResultaPerPag=10;
 
+//Encuestas del tipo segunda vuelta
+$encuestasRellamada = array (376647);
+
 //Calculamos las llamadas pendientes, recuperadas y totales
 $conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
 
@@ -252,7 +255,7 @@ $startCall = ($_GET['page'] - 1) * $numResultaPerPag;
 
 $sqlToken=
 "select ".
-"tok.tid,tok.firstname,tok.lastname,tok.token,tok.attribute_2,tok.attribute_3,tok.completed,tok.usesleft as intentos,".
+"tok.tid,tok.firstname,tok.lastname,tok.token,tok.attribute_2,tok.attribute_3,tok.attribute_4,tok.completed,tok.usesleft as intentos,".
 " srv.`".$surveyID.$CONTACT."` as CONTACT,srv.`".$surveyID.$MOTIV."` as MOTIV ".
 ", anws.answer ".
 " from tokens_".$surveyID." tok ".
@@ -288,8 +291,17 @@ if(! $retval )
 													<thead>
 															<tr>
 																<th>Nombre</th>
-																<th>Teléfono 1</th>
-																<th>Teléfono 2</th>
+																<?php if( !in_array($surveyID,$encuestasRellamada)){ ?>
+			
+																	<th>Teléfono 1</th>
+																	<th>Teléfono 2</th>
+														
+																<?php } else if(in_array($surveyID,$encuestasRellamada)) {?>
+			
+																	<th>Fecha cita</th>
+																	<th>Teléfonos</th>
+																
+																<?php } ?>
 																<th>Recuperar</th>
 																<th>Intentos</th>
 																<th>Encuesta</th>
@@ -302,8 +314,18 @@ while($row = mysql_fetch_assoc($retval))
 	{
 	echo "<tr id='tok".$row["tid"]."' >";
 	echo "<td>{$row["firstname"]} {$row["lastname"]}</td>";
-	echo "<td>{$row["attribute_2"]}</td>";
-	echo "<td>{$row["attribute_3"]}</td>";
+	
+	//Columnas de cita y telefonos
+	if( !in_array($surveyID,$encuestasRellamada)){
+			
+		echo "<td>{$row["attribute_2"]}</td>";
+		echo "<td>{$row["attribute_3"]}</td>";
+	
+	} else if(in_array($surveyID,$encuestasRellamada)) {
+			
+		echo "<td>{$row["attribute_2"]}</td>";
+		echo "<td>{$row["attribute_3"]} - {$row["attribute_4"]}</td>";	
+	}
 	
 	//Columna recuperar
 	if ($row["completed"] =="N" and (($row["CONTACT"] == "N" and $row["MOTIV"] =="A1") OR ($row["CONTACT"] == "A2" and $row["MOTIV"] =="A1"))){
