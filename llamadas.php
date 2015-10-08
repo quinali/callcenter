@@ -108,7 +108,7 @@ $anws_code=$recallConfig[3];
 	<!-- Custom styles for this template -->
     <link href="css/dashboard.css" rel="stylesheet">
 	<link href="css/sb-admin.css" rel="stylesheet">
-	
+	<link href="css/llamadas.css" rel="stylesheet">
 </head>
 
 <body>
@@ -321,7 +321,7 @@ while($row = mysql_fetch_assoc($retval))
 	if($row["completed"] =="N")
 		echo "<td><a href='/limesurvey/index.php/survey/index/sid/$surveyID/token/{$row["token"]}/lang//newtest/Y'><i class='fa fa-sign-in fa-2x'></i></a></td>";
 	else
-		echo "<td><span class='glyphicon glyphicon-phone-alt' data-toggle='tooltip' data-placement='top' title='{$row["completed"]}'></span></td>";
+		echo "<td><span style='red' class='glyphicon glyphicon-phone-alt' data-toggle='tooltip' data-placement='top' title='{$row["completed"]}'></span></td>";
 	echo "</tr>";
 }
 ?>

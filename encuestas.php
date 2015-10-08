@@ -89,7 +89,7 @@ mysql_close($conn);
 				<div class="row">	
 					<div class="col-lg-9">
 						<ol class="breadcrumb">
-							<li class="active">
+							<li>
 								<i class="fa fa-dashboard"></i> Encuestas
 							</li>
 							<li class="active">
