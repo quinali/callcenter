@@ -146,11 +146,11 @@
                     <li>
                         <a href="administrarEncuesta.php?idSurvey=<?php echo $surveyID; ?>"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
                     </li>
-                    <li class="active">
-                        <a href="#"><i class="fa fa-fw fa-users"></i> Operadores</a>
+                    <li>
+                        <a href="asignarOperadores.php?idSurvey=<?php echo $surveyID;?>"><i class="fa fa-fw fa-users"></i> Operadores</a>
                     </li>
-					<li>
-                        <a href="encuestaSetting.php?idSurvey=<?php echo $surveyID;?>"><i class="fa fa-fw fa-pencil-square-o"></i> Configuración</a>
+					<li class="active">
+                        <a href="#"><i class="fa fa-fw fa-pencil-square-o"></i> Configuración</a>
                     </li>
                 </ul>
             </div>
@@ -165,7 +165,7 @@
                 <div class="row">
                     <div class="col-lg-8">
                         <h1 class="page-header">
-                            <small>Asignaci&oacute;n de operadores:</small> 
+                            <small>Configuraci&oacute;n de</small>
 							<br/><?php echo $title;?>
                         </h1>
                         <ol class="breadcrumb">
@@ -173,43 +173,11 @@
                                 <i class="fa fa-dashboard"></i><a href='administrarEncuesta.php?idSurvey=<?php echo "$surveyID"?>'>Dashboard</a>
 						    </li>
                             <li class="active">
-                                <i class="fa fa-users"></i> Operadores
+                                <i class="fa fa-pencil-square-o"></i> Configuraci&oacute;n
                             </li>
                         </ol>
                     </div>
-					
-					<div class="col-lg-2 col-md-6">
-                        <div class="panel panel-yellow">
-                            <div class="panel-heading">
-                                <div class="row">
-                                    <div class="col-xs-3">
-                                        <i class="fa fa-users fa-5x"></i>
-                                    </div>
-                                    <div class="col-xs-9 text-right">
-                                        <div class="huge"><?php echo $nOperadoresAsignados;?></div>
-                                        <div>Opers. con llamadas</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-					<div class="col-lg-2 col-md-6">
-                        <div class="panel panel-red">
-                            <div class="panel-heading">
-                                <div class="row">
-                                    <div class="col-xs-3">
-                                        <i class="fa fa-users fa-5x"></i>
-                                    </div>
-                                    <div class="col-xs-9 text-right">
-                                        <div class="huge"><?php echo $nOperadores;?></div>
-                                        <div>Opers. actuales</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-					
-                </div>
+				</div>
                 <!-- /.row -->
              
 			 <!-- Zona del mensaje -->
@@ -235,67 +203,24 @@
                     <div class="col-lg-6 col-md-6">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title"><i class="fa fa-users fa-fw"></i> Asignaci&oacute;n de operadores</h3>
+                                <h3 class="panel-title"><i class="fa fa-pencil-square-o fa-fw"></i> Configuraci&oacute;n de encuestas:</h3>
                             </div>
                             <div class="panel-body">
 							
 									<div class="row">
-										<div class="col-lg-3 col-md-6 text-center">
-											<div class="panel panel-default  clear">
-												<div class="panel-body">
-													<b>No asignados:</b><br/>
-														<select multiple id='lstBox1' size="10">
-<?php														//Propuesta operadores Sevilla
-															foreach(range(1, $totalOperatorsSevilla) as $idOperador){
-															if(!array_key_exists ('sev'.$idOperador,$operadores)){
-																		$valOperador = 'sev'.$idOperador;
-																		print("<option value='".$valOperador."'>Sevilla ".$idOperador."</option>");
-																}
-															}
-															//Propuesta operadores Madrid
-															foreach(range(1, $totalOperatorsMadrid) as $idOperador){
-																if(!array_key_exists ('mad'.$idOperador,$operadores)){
-																			$valOperador = 'mad'.$idOperador;
-																			print("<option value='".$valOperador."'>Madrid ".$idOperador."</option>");
-																	}
-															}
-?>
-														</select>
-													
-												</div>
-											</div>
-										</div>
-										<div class="col-lg-3 col-md-6 text-center" style="vertical-align:middle;">
-											<div class="panel panel-default clear">
-												<div class="panel-body">
-												<br/><br/><br/><br/>
-													<input type='button' id='btnLeft' value ='  <  '/>
-													<input type='button' id='btnRight' value ='  >  '/>
-											
-													<br/><br/>
-													
-												</div>
-											</div>
-										</div>
-										<div class="col-lg-3 col-md-6 text-center">
-											<div class="panel panel-default clear">
-												<div class="panel-body">
-													<b>Asignados: </b><br/>
-								<select multiple id='lstBox2' name="lstBox2[]" size="10">
-<?php								$fieldValue = array();
-						
-									foreach ($operadores as $valOperator =>$nameOperador)
-										{
-											$fieldValue[$valOperator]=$nameOperador;
-											echo "<option value='".$valOperator."'>".$nameOperador."</option>";
-										}
-									
-									$out = array_keys($fieldValue);
-?>
-							</select>
-												</div>
-											</div>
-										</div>
+										
+										<label for="url" >URL language</label>
+										<input type="text" name="url" id="url" class="form-control" placeholder="Introduzca su URL" value="http://localhost/encuestasv2/llamadas.php?surveyID=<?php echo $surveyID; ?>" required autofocus>
+										
+										<label for="urlTitle" >URL title</label>
+										<input type="text" id="urlTitle" name="urlTitle" class="form-control" value="Listado de clientes" required>
+										
+										<label for="settings" >Pluggins settings</label>
+										<input type="text" name="settings" id="settings" class="form-control" placeholder="Introduzca sus paramtros" value="138,X16X136,X16X137,X16X138" required autofocus>
+										
+										
+																		
+										
 										
 									</div>
 									<!-- /.row -->
@@ -304,9 +229,6 @@
 							
 							 <div class="panel-footer text-right">
                                 <form action="guardarEncuesta.php" method="post">
-									<input type="hidden" 	name="surveyID" value="<?php echo "$surveyID"?>"  >
-									<input type="hidden" 	id="operadoresID" name="operadoresID" >
-									<script type="text/javascript">$('input#operadoresID').val(<?php echo json_encode($out)?>);</script>
 									<input type="submit" class="btn btn-info" value="Guardar">
 								</form>	
                             </div>
@@ -332,53 +254,6 @@
     <!-- Bootstrap Core JavaScript -->
     <script src="../js/bootstrap.min.js"></script>
 
-	<script type="text/javascript">
-	
-	function hideFieldRecharge(){
-				
-				fieldContent="[";
-				$("#lstBox2 > option").each(function() {
-					fieldContent+="'"+this.value+"',";
-			});
-			
-			fieldContent+=']';
-			fieldContent=fieldContent.replace(",]","]");
-
-			$('input#operadoresID').val(fieldContent);
-				
-				
-	}
-	
-    $(document).ready(function() {
-			$('#btnRight').click(function(e) {
-				var selectedOpts = $('#lstBox1 option:selected');
-				if (selectedOpts.length == 0) {
-					//alert("Nothing to move.");
-					e.preventDefault();
-				}
-
-				$('#lstBox2').append($(selectedOpts).clone());
-				$(selectedOpts).remove();
-				e.preventDefault();
-				hideFieldRecharge();
-			});
-
-			$('#btnLeft').click(function(e) {
-				var selectedOpts = $('#lstBox2 option:selected');
-				if (selectedOpts.length == 0) {
-					//alert("Nothing to move.");
-					e.preventDefault();
-				}
-
-				$('#lstBox1').append($(selectedOpts).clone());
-				$(selectedOpts).remove();
-				e.preventDefault();
-				hideFieldRecharge();
-			});
-	});
-</script>
-	
-	 
 </body>
 
 </html>
