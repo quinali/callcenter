@@ -7,75 +7,9 @@
 <?php
 	require ('validateAdminSession.php');
 	require ('../config.php');
+	require ("./model/encuestasModel.php");
 
-	$totalOperatorsSevilla= 50;
-	$totalOperatorsMadrid= 50;
-	
 	$surveyID= htmlspecialchars($_GET["idSurvey"]);
-	$conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
-	mysqli_query( $conn,"SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
-	
-	// Check connection
-	if (!$conn) {
-		die("Connection failed: " . mysqli_connect_error());
-	}
-
-	//Recupera el nombre de la encuesta
-	$titleSql = 'select surveyls_title from surveys_languagesettings where surveyls_survey_id ='.$surveyID;
-	$result = mysqli_query($conn, $titleSql);
-	
-	if (mysqli_num_rows($result) > 0) {
-		$row = mysqli_fetch_assoc($result);
-		$title = $row["surveyls_title"];
-	}
-	
-	
-	mysqli_close($conn);
-	
-	$conn = mysql_connect($dbhost, $dbuser, $dbpass);
-	mysql_select_db($dbname);
-
-	$sqlOperadores ="SELECT * FROM survey_operators WHERE idSurvey=".$surveyID;
-
-	$retval =  mysql_query( $sqlOperadores, $conn );
-
-	$operadores = array();
-
-	//Sacamos los operadores asignados a este encuesta
-	while($row = mysql_fetch_assoc($retval))
-		{
-		
-			$operadores [$row['idOperator']] = $row['nameOperator'];
-		
-		}
-	mysql_close($conn);
-
-	//print($sqlOperadores);
-	//print_r($operadores);
-	
-	 
-	
-	//TOTAL DE ENCUESTAS ASIGNADAS Y PENDIENTES PARA ADMINISTRAR
-	$conn = mysql_connect($dbhost, $dbuser, $dbpass);
-	mysql_select_db($dbname);
-
-	if(! $conn )
-		{
-			die('Could not connect: ' . mysql_error());
-		}
-
-	$sqlTotales =	"select ".
-					" ( select count(1) from (select distinct(attribute_1) from tokens_".$surveyID." tok group by attribute_1) as difOperadores ) as nOperadoresAsignados,".
-					" (select count(1) from survey_operators where idSurvey=".$surveyID.") as nOperadores;";
-	
-	$retval2 =  mysql_query( $sqlTotales, $conn );
-	
-	$row2 = mysql_fetch_assoc($retval2);
-	$nOperadoresAsignados=$row2['nOperadoresAsignados'];
-	$nOperadores=$row2['nOperadores'];	
-	
-	mysql_close($conn);
-
 ?>
 
 <head>
@@ -166,7 +100,7 @@
                     <div class="col-lg-8">
                         <h1 class="page-header">
                             <small>Configuraci&oacute;n de</small>
-							<br/><?php echo $title;?>
+							<br/><?php echo getTitle($dbhost,$dbuser,$dbpass,$dbname,$surveyID);?>
                         </h1>
                         <ol class="breadcrumb">
                             <li>
@@ -200,39 +134,129 @@
 			
 			
                 <div class="row">
-                    <div class="col-lg-6 col-md-6">
+                    <div class="col-lg-8 col-md-8">
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <h3 class="panel-title"><i class="fa fa-pencil-square-o fa-fw"></i> Configuraci&oacute;n de encuestas:</h3>
                             </div>
                             <div class="panel-body">
 							
-									<div class="row">
+								<label for="url" >URL language</label>
+								
+								
+								<div class="row">
+									<div class="col-lg-12">
+										<div class="col-lg-6">
+											<form name="urlForm" action="updateSettings.php" method="post">
+											<input type="hidden" 	name="idSurvey" value="<?php echo "$surveyID"?>"  >
+											<input type="text" 		name="url" id="url" class="form-control" placeholder="Introduzca su URL" value="<?php echo getUrlSurvey($dbhost,$dbuser,$dbpass,$dbname,$surveyID); ?>" required autofocus>
+										</div>	
+										<div class="col-lg-2">
+											<a href="javascript:getUrl();" class="btn btn-info"><span data-toggle='tooltip' data-placement='top' title='Recalcular'><i class="fa fa-refresh"></i></span></a>
+											<a href="javascript: document.urlForm.submit();" class="btn btn-info"><span data-toggle='tooltip' data-placement='top' title='Guardar'><i class="fa fa-floppy-o"></i></span></a>
+											</form>
+										</div>	
+									</div>	
+								</div>
+								<!-- /.row -->
+									<script>
+									function getUrl() {
 										
-										<label for="url" >URL language</label>
-										<input type="text" name="url" id="url" class="form-control" placeholder="Introduzca su URL" value="http://localhost/encuestasv2/llamadas.php?surveyID=<?php echo $surveyID; ?>" required autofocus>
+										 if (window.XMLHttpRequest) {
+											// code for IE7+, Firefox, Chrome, Opera, Safari
+											xmlhttp = new XMLHttpRequest();
+										} else {
+											// code for IE6, IE5
+											xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+										}
+										xmlhttp.onreadystatechange = function() {
+											if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+												$('input#url').val(xmlhttp.responseText);
+											}
+										}
+										xmlhttp.open("GET", "encuestaUrl.php?accion=url&idSurvey=" + <?php echo $surveyID;?>, true);
+										xmlhttp.send();
+									}
+									</script>
+								
+								
+								<label for="urlTitle" >URL title</label>								
+								<div class="row">
+									<div class="col-lg-12">
+										<div class="col-lg-6">
+											<form name="titleForm" action="updateSettings.php" method="post">
+												<input type="hidden" 	name="idSurvey" value="<?php echo "$surveyID"?>"  >										
+												<input type="text" id="urlTitle" name="urlTitle" class="form-control" value="<?php echo getUrlTitle($dbhost,$dbuser,$dbpass,$dbname,$surveyID); ?>" required>
+										</div>	
+										<div class="col-lg-2">
+											<script>
+												function getUrlTitle() {
+													
+														 if (window.XMLHttpRequest) {
+															// code for IE7+, Firefox, Chrome, Opera, Safari
+															xmlhttp = new XMLHttpRequest();
+														} else {
+															// code for IE6, IE5
+															xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+														}
+														xmlhttp.onreadystatechange = function() {
+															if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+																$('input#urlTitle').val(xmlhttp.responseText);
+															}
+														}
+														xmlhttp.open("GET", "encuestaUrl.php?accion=title&idSurvey=" + <?php echo $surveyID;?>, true);
+														xmlhttp.send();
+											}
+											</script>
 										
-										<label for="urlTitle" >URL title</label>
-										<input type="text" id="urlTitle" name="urlTitle" class="form-control" value="Listado de clientes" required>
-										
-										<label for="settings" >Pluggins settings</label>
-										<input type="text" name="settings" id="settings" class="form-control" placeholder="Introduzca sus paramtros" value="138,X16X136,X16X137,X16X138" required autofocus>
-										
-										
-																		
-										
-										
+											<a href="javascript:getUrlTitle()" class="btn btn-info"><span data-toggle='tooltip' data-placement='top' title='Recalcular'><i class="fa fa-refresh"></i></span></a>
+											<a href="javascript: document.titleForm.submit();" class="btn btn-info"><span data-toggle='tooltip' data-placement='top' title='Guardar'><i class="fa fa-floppy-o"></i></span></a>
+										</form>
+									</div>	
+								</div>
+								</div>	
+								<!-- /.row -->
+								
+								<label for="settings" >Pluggins settings</label>								
+								<div class="row">	
+									<div class="col-lg-12">
+										<div class="col-lg-6">
+											<form name="settingsForm"		action="updateSettings.php" method="post">
+												<input type="hidden" 	name="idSurvey" value="<?php echo "$surveyID"?>"  >											
+												<input type="text" name="settings" id="settings" class="form-control" placeholder="Introduzca sus paramtros" value="<?php echo getPlugginSetting($dbhost,$dbuser,$dbpass,$dbname,$surveyID); ?>" required autofocus>
+										</div>
+										<div class="col-lg-2">
+											<a href="javascript:getPlugginSettings()" class="btn btn-info"><span data-toggle='tooltip' data-placement='top' title='Recalcular'><i class="fa fa-refresh"></i></span></a>
+											<script>
+												function getPlugginSettings() {
+													
+														if (window.XMLHttpRequest) {
+															// code for IE7+, Firefox, Chrome, Opera, Safari
+															xmlhttp = new XMLHttpRequest();
+														} else {
+															// code for IE6, IE5
+															xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+														}
+														xmlhttp.onreadystatechange = function() {
+															if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+																$('input#settings').val(xmlhttp.responseText);
+															}
+														}
+														xmlhttp.open("GET", "encuestaUrl.php?accion=value&idSurvey=" + <?php echo $surveyID;?>, true);
+														xmlhttp.send();
+											}
+											
+											
+												</script>
+												<a href="javascript: document.settingsForm.submit();" class="btn btn-info"><span data-toggle='tooltip' data-placement='top' title='Guardar'><i class="fa fa-floppy-o"></i></span></a>
+											</form>
+										</div>		
 									</div>
 									<!-- /.row -->
-								
+								</div>
 							</div>
 							
-							 <div class="panel-footer text-right">
-                                <form action="guardarEncuesta.php" method="post">
-									<input type="submit" class="btn btn-info" value="Guardar">
-								</form>	
-                            </div>
-                        </div>
+					    </div>
                     </div>
                 </div>
                 <!-- /.row -->
