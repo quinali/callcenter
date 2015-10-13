@@ -20,7 +20,7 @@ mysqli_query($conn, $resetSQL);
 
 //Numero de operadores
 $conn = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname);
-$nOperadoresSQL = "select * from survey_operators where idSurvey=".$surveyID;
+$nOperadoresSQL ="SELECT CONVERT(SUBSTRING_INDEX(nameOperator,' ',-1),UNSIGNED INTEGER) as num, suvOpe.* from survey_operators suvOpe where idSurvey=".$surveyID." order by num";
 $result = mysqli_query($conn, $nOperadoresSQL);
 
 $operadores = array();
