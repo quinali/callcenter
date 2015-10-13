@@ -35,7 +35,7 @@
 	$conn = mysql_connect($dbhost, $dbuser, $dbpass);
 	mysql_select_db($dbname);
 
-	$sqlOperadores ="SELECT * FROM survey_operators WHERE idSurvey=".$surveyID;
+	$sqlOperadores ="SELECT CONVERT(SUBSTRING_INDEX(nameOperator,' ',-1),UNSIGNED INTEGER) as num, suvOpe.* from survey_operators suvOpe where idSurvey=".$surveyID." order by num";
 
 	$retval =  mysql_query( $sqlOperadores, $conn );
 
