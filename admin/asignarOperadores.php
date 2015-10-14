@@ -35,7 +35,7 @@
 	$conn = mysql_connect($dbhost, $dbuser, $dbpass);
 	mysql_select_db($dbname);
 
-	$sqlOperadores ="SELECT * FROM survey_operators WHERE idSurvey=".$surveyID;
+	$sqlOperadores ="SELECT CONVERT(SUBSTRING_INDEX(nameOperator,' ',-1),UNSIGNED INTEGER) as num, suvOpe.* from survey_operators suvOpe where idSurvey=".$surveyID." order by num";
 
 	$retval =  mysql_query( $sqlOperadores, $conn );
 
@@ -123,7 +123,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="encuestas.php">SB Admin</a>
+                <a class="navbar-brand" href="encuestas.php">Encuestas</a>
             </div>
             <!-- Top Menu Items -->
             <ul class="nav navbar-right top-nav">
@@ -149,6 +149,9 @@
                     <li class="active">
                         <a href="#"><i class="fa fa-fw fa-users"></i> Operadores</a>
                     </li>
+					<li>
+                        <a href="encuestaSetting.php?idSurvey=<?php echo $surveyID;?>"><i class="fa fa-fw fa-pencil-square-o"></i> Configuración</a>
+                    </li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -162,7 +165,7 @@
                 <div class="row">
                     <div class="col-lg-8">
                         <h1 class="page-header">
-                            Asignaci&oacute;n <small>de operadores:</small> 
+                            <small>Asignaci&oacute;n de operadores:</small> 
 							<br/><?php echo $title;?>
                         </h1>
                         <ol class="breadcrumb">

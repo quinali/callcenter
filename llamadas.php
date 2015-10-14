@@ -315,6 +315,8 @@ while($row = mysql_fetch_assoc($retval))
 	{
 	echo "<tr id='tok".$row["tid"]."' >";
 	echo "<td>{$row["firstname"]} {$row["lastname"]}</td>";
+	
+	//Columnas de cita y telefonos
 	if( !in_array($surveyID,$encuestasRellamada)){
 			
 		echo "<td>{$row["attribute_2"]}</td>";

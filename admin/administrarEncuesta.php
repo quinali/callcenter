@@ -98,7 +98,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="encuestas.php">SB Admin</a>
+                <a class="navbar-brand" href="encuestas.php">Encuestas</a>
             </div>
             <!-- Top Menu Items -->
             <ul class="nav navbar-right top-nav">
@@ -124,6 +124,9 @@
                     <li>
                         <a href="asignarOperadores.php?idSurvey=<?php echo $surveyID;?>"><i class="fa fa-fw fa-users"></i> Operadores</a>
                     </li>
+					<li>
+                        <a href="encuestaSetting.php?idSurvey=<?php echo $surveyID;?>"><i class="fa fa-fw fa-pencil-square-o"></i> Configuración</a>
+                    </li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -137,7 +140,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Dashboard <small>Statistics Overview:</small> <br/><?php echo $title;?>
+                            <small> Dashboard:</small> <br/><?php echo $title;?>
                         </h1>
                         <ol class="breadcrumb">
                             <li class="active">
