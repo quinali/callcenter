@@ -216,7 +216,7 @@
                             </div>
 							<div class="panel-body">
 								<div> 
-									<a class='btn btn-info' href='reasignaEncuestas.php?surveyID=<?php echo "$surveyID"?>'><span class="glyphicon glyphicon-refresh"></span> Asignar Llamadas</a>	
+									<a class='btn btn-info' href='reasignaEncuestas.php?surveyID=<?php echo "$surveyID"?>'><span class="glyphicon glyphicon-refresh"></span> Asignar</a>	
 								</div>
 							</div>
                         </div>
@@ -313,11 +313,13 @@ $conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
 
 
 
-$sqlOperadores ="select operador, ".
+$sqlOperadores ="select ".
+"CONVERT(SUBSTRING(operador,4),UNSIGNED INTEGER)+ (IF(STRCMP(SUBSTRING(operador,1,3),'sev'),1,100))as orden,".
+"operador, ".
 "(select count(1) from tokens_".$surveyID." tk2 where tk2.attribute_1=tok1.operador and completed='N') as ptes, ".
 "(select count(1) from tokens_".$surveyID." tk3 where tk3.attribute_1=tok1.operador and completed<>'N') as ejecutadas ".
 "from ".
-"(select distinct(attribute_1) as operador from tokens_".$surveyID."  group by attribute_1) as tok1 ";
+"(select distinct(attribute_1) as operador from tokens_".$surveyID."  group by attribute_1) as tok1 order by orden";
 
 ?>
 

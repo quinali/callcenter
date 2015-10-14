@@ -156,42 +156,45 @@ mysql_close($conn);
 <?PHP
 while($row = mysql_fetch_assoc($retval))
 	{
-														echo "<tr class='alt'>";
-	
-	$idEncuesta = $row['sid'];
-	$tituloEncuesta = $row['surveyls_title'];
-														echo "<td>".$tituloEncuesta."</td>";
-	
-	$conn2 = mysql_connect($dbhost, $dbuser, $dbpass);
-	mysql_select_db($dbname);
-	
-	if(! $conn2 )
-		{
-			die('Could not connect: ' . mysql_error());
-		}
+		$idEncuesta = $row['sid'];	
+		$tituloEncuesta = $row['surveyls_title'];
+		
+		//Segunda consulta, para sacar los valores numericos
+		$conn2 = mysql_connect($dbhost, $dbuser, $dbpass);
+		mysql_select_db($dbname);
+		
+		if(! $conn2 )
+			{
+				die('Could not connect: ' . mysql_error());
+			}
 
-	//TOTAL DE ENCUESTAS ASIGNADAS Y PENDIENTES PARA ESTE OPERADOR
-	$sqlTotales ="select ".
-				" ( select count(1) from tokens_".$idEncuesta." tok where tok.completed='N' and tok.attribute_1='".$idOperador."') as pdtes,".
-				" ( select count(1) from tokens_".$idEncuesta." tok WHERE tok.attribute_1='".$idOperador."') as tot;";
+			
+		//TOTAL DE ENCUESTAS ASIGNADAS Y PENDIENTES PARA ESTE OPERADOR
+		$sqlTotales ="select ".
+					" ( select count(1) from tokens_".$idEncuesta." tok where tok.completed='N' and tok.attribute_1='".$idOperador."') as pdtes,".
+					" ( select count(1) from tokens_".$idEncuesta." tok WHERE tok.attribute_1='".$idOperador."') as tot;";
+		
+		$retval2 =  mysql_query( $sqlTotales, $conn2 );
+		$row2 = mysql_fetch_assoc($retval2);
 	
-	$retval2 =  mysql_query( $sqlTotales, $conn2 );
-	
-	$row2 = mysql_fetch_assoc($retval2);
-	
-	$nTotal=$row2['tot'];
-	$nPendientes=$row2['pdtes'];
+		$nTotal=$row2['tot'];
+		$nPendientes=$row2['pdtes'];
 	 
-	
-	mysql_close($conn2);
-	
-														echo "<td> {$nPendientes} </td>";
-														echo "<td> {$nTotal} </td>";
-														echo "<td>";
-														if($nTotal+$nPendientes != 0)
-															echo"<a href='llamadas.php?surveyID={$idEncuesta}'><i class='fa fa-sign-in fa-2x'></i></a></td>";
-														echo "</td>";
-	}
+		mysql_close($conn2);
+					if($nTotal+$nPendientes != 0){
+						echo "<tr class='alt'>";
+						echo "<td>".$tituloEncuesta."</td>";
+						echo "<td> {$nPendientes} </td>";
+						echo "<td> {$nTotal} </td>";
+						echo "<td>";
+						if($nTotal+$nPendientes != 0)
+							echo"<a href='llamadas.php?surveyID={$idEncuesta}'><i class='fa fa-sign-in fa-2x'></i></a></td>";
+						echo "</td>";
+						echo "</tr>";
+					}
+														
+														
+	}						
 ?>
 														</tbody>
 												</table>
