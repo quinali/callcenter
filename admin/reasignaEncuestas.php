@@ -22,7 +22,14 @@ mysqli_query($conn, $resetSQL);
 $conn = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname);
 
 //$nOperadoresSQL = "select * from survey_operators where idSurvey=".$surveyID;
-$nOperadoresSQL ="SELECT CONVERT(SUBSTRING_INDEX(nameOperator,' ',-1),UNSIGNED INTEGER) as num, suvOpe.* from survey_operators suvOpe where idSurvey=".$surveyID." order by num";
+$nOperadoresSQL ="SELECT ".
+"CONVERT(SUBSTRING(idOperator,4),UNSIGNED INTEGER)+ (IF(STRCMP(SUBSTRING(idOperator,1,3),'sev'),1,100))as orden,".
+" suvOpe.* from survey_operators suvOpe where idSurvey=".$surveyID." order by orden";
+
+?>
+<script > alert(<?php echo $nOperadoresSQL;?> );</script>
+<?php
+
 $result = mysqli_query($conn, $nOperadoresSQL);
 
 $operadores = array();

@@ -35,7 +35,9 @@
 	$conn = mysql_connect($dbhost, $dbuser, $dbpass);
 	mysql_select_db($dbname);
 
-	$sqlOperadores ="SELECT CONVERT(SUBSTRING_INDEX(nameOperator,' ',-1),UNSIGNED INTEGER) as num, suvOpe.* from survey_operators suvOpe where idSurvey=".$surveyID." order by num";
+	$sqlOperadores ="SELECT ".
+	"CONVERT(SUBSTRING(idOperator,4),UNSIGNED INTEGER)+ (IF(STRCMP(SUBSTRING(idOperator,1,3),'sev'),1,100))as orden,".
+	"suvOpe.* from survey_operators suvOpe where idSurvey=".$surveyID." order by orden";
 
 	$retval =  mysql_query( $sqlOperadores, $conn );
 
@@ -245,19 +247,19 @@
 												<div class="panel-body">
 													<b>No asignados:</b><br/>
 														<select multiple id='lstBox1' size="10">
-<?php														//Propuesta operadores Sevilla
-															foreach(range(1, $totalOperatorsSevilla) as $idOperador){
-															if(!array_key_exists ('sev'.$idOperador,$operadores)){
-																		$valOperador = 'sev'.$idOperador;
-																		print("<option value='".$valOperador."'>Sevilla ".$idOperador."</option>");
-																}
-															}
-															//Propuesta operadores Madrid
+<?php														//Propuesta operadores Madrid
 															foreach(range(1, $totalOperatorsMadrid) as $idOperador){
 																if(!array_key_exists ('mad'.$idOperador,$operadores)){
 																			$valOperador = 'mad'.$idOperador;
 																			print("<option value='".$valOperador."'>Madrid ".$idOperador."</option>");
 																	}
+															}
+															//Propuesta operadores Sevilla
+															foreach(range(1, $totalOperatorsSevilla) as $idOperador){
+															if(!array_key_exists ('sev'.$idOperador,$operadores)){
+																		$valOperador = 'sev'.$idOperador;
+																		print("<option value='".$valOperador."'>Sevilla ".$idOperador."</option>");
+																}
 															}
 ?>
 														</select>
